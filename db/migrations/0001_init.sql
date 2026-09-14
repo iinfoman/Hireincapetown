@@ -38,6 +38,7 @@ create table businesses (
   slug            text            not null unique,
   category        text            not null,
   suburbs_served  text[]          not null default '{}',
+  services        text[]          not null default '{}',
   description     text,
   phone           text,
   whatsapp        text,

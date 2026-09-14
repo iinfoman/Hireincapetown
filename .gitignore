@@ -1,2 +1,8 @@
 # Seeded design-canvas output — regenerated from design/*.dc.html, ~2.6 MB
 design/hireincapetown-design.html
+
+# Build output
+dist/
+node_modules/
+.env
+.env.local

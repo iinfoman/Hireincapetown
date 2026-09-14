@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-surface font-body text-ink antialiased;
+  }
+  h1, h2, h3 { @apply font-dsp tracking-[-0.022em]; }
+  /* Customers skew older — never remove the focus ring, only restyle it. */
+  :focus-visible { @apply outline outline-2 outline-offset-2 outline-protea; }
+  select { background-image: none; }
+}
