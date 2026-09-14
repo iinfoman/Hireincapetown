@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Karla:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin:0; background:#F2F3F5; color:#161C24;
+           font-family:Karla,'Helvetica Neue',Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+    .dsp { font-family:'Bricolage Grotesque',Karla,system-ui,sans-serif; letter-spacing:-0.022em; margin:0; }
+    a { color:#A8325A; text-decoration:none; } a:hover { color:#7E2242; }
+    svg { display:block; }
+    .m { color:#5A6472; }
+  </style>
+</helmet>
+
+<div style="width:390px; min-height:1196px; background:#F2F3F5; position:relative; overflow:hidden;">
+
+  <!-- search header -->
+  <div style="background:#FFFFFF; border-bottom:1px solid #E4E7EC; padding:13px 14px 0;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="M14.5 5L7.5 12l7 7"/></svg>
+      <div style="flex:1; background:#F2F3F5; border-radius:12px; padding:9px 12px;">
+        <div class="dsp" style="font-size:14.5px; font-weight:700; line-height:1.2;">Plumber</div>
+        <div class="m" style="font-size:12px; margin-top:1px;">Plumstead + 4 suburbs nearby</div>
+      </div>
+      <button style="width:44px; height:44px; border:1px solid #E4E7EC; border-radius:12px; background:#FFFFFF; display:flex; align-items:center; justify-content:center; cursor:pointer; flex:0 0 auto;">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round"><path d="M4 7h16"/><path d="M7 12h10"/><path d="M10 17h4"/></svg>
+      </button>
+    </div>
+
+    <!-- filter chips -->
+    <div style="display:flex; gap:7px; padding:13px 0 12px; overflow:hidden;">
+      <div style="display:flex; align-items:center; gap:6px; background:#0F6B4F; border-radius:999px; padding:8px 12px; flex:0 0 auto;">
+        <span style="width:6px; height:6px; border-radius:999px; background:#8FE3B8; display:block;"></span>
+        <span style="font-size:13px; font-weight:700; color:#FFFFFF;">Open now</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; background:#FFFFFF; border:1px solid #D6DBE2; border-radius:999px; padding:8px 12px; flex:0 0 auto;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0F6B4F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.6v5.2c0 4.4-3 8.1-7 9.2-4-1.1-7-4.8-7-9.2V5.6z"/><path d="M9 12.1l2.2 2.2 4-4.3"/></svg>
+        <span style="font-size:13px; font-weight:600;">Verified only</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; background:#FFFFFF; border:1px solid #D6DBE2; border-radius:999px; padding:8px 12px; flex:0 0 auto;">
+        <span style="font-size:13px; font-weight:600;">4.5+</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px; background:#FFFFFF; border:1px solid #D6DBE2; border-radius:999px; padding:8px 12px; flex:0 0 auto;">
+        <span style="font-size:13px; font-weight:600;">Emergency</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- count + view switch -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 16px 11px;">
+    <div>
+      <div class="dsp" style="font-size:17px; font-weight:700;">19 plumbers</div>
+      <div class="m" style="font-size:12.5px; margin-top:1px;">7 open now · sorted by distance</div>
+    </div>
+    <div style="display:flex; background:#E7EAEE; border-radius:11px; padding:3px;">
+      <div style="display:flex; align-items:center; gap:5px; background:#FFFFFF; border-radius:9px; padding:7px 11px; box-shadow:0 1px 2px rgba(22,28,36,0.10);">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="2" stroke-linecap="round"><path d="M4 6.5h16"/><path d="M4 12h16"/><path d="M4 17.5h16"/></svg>
+        <span style="font-size:12.5px; font-weight:700;">List</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:5px; border-radius:9px; padding:7px 11px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5A6472" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.2L3.5 6.5v13.3L9 17.5l6 2.3 5.5-2.3V4.2L15 6.5z"/><path d="M9 4.2v13.3"/><path d="M15 6.5v13.3"/></svg>
+        <span style="font-size:12.5px; font-weight:600; color:#5A6472;">Map</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- results -->
+  <div style="display:flex; flex-direction:column; gap:11px; padding:0 14px;">
+
+    <!-- card 1 -->
+    <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:16px; padding:14px;">
+      <div style="display:flex; gap:12px;">
+        <div style="width:54px; height:54px; border-radius:13px; background:#FBEEF3; display:flex; align-items:center; justify-content:center; flex:0 0 auto;">
+          <span class="dsp" style="font-size:18px; font-weight:800; color:#A8325A;">KP</span>
+        </div>
+        <div style="flex:1; min-width:0;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="dsp" style="font-size:16.5px; font-weight:700; line-height:1.2;">Kritzinger Plumbing</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F6B4F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="M12 3l7 2.6v5.2c0 4.4-3 8.1-7 9.2-4-1.1-7-4.8-7-9.2V5.6z"/><path d="M9 12.1l2.2 2.2 4-4.3"/></svg>
+          </div>
+          <div style="display:flex; align-items:center; gap:5px; margin-top:4px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+            <span style="font-size:13.5px; font-weight:700;">4.8</span>
+            <span class="m" style="font-size:13px;">· 213 reviews</span>
+          </div>
+          <div class="m" style="font-size:13px; margin-top:4px;">Diep River · 2,4 km away</div>
+        </div>
+        <div style="flex:0 0 auto;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#8B94A1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9.1A4 4 0 0 1 12 8a4 4 0 0 1 7 2.9C19 15.7 12 20 12 20z"/></svg>
+        </div>
+      </div>
+      <div class="m" style="font-size:13px; margin-top:11px; line-height:1.5;">Burst pipes · Blocked drains · Geyser replacement · Leak detection</div>
+      <div style="display:flex; align-items:center; gap:14px; margin-top:11px;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:6px; height:6px; border-radius:999px; background:#1FA45E; display:block;"></span>
+          <span style="font-size:12.5px; font-weight:600; color:#0F6B4F;">Open · 24 hr callout</span>
+        </div>
+        <span class="m" style="font-size:12.5px;">Callout from R450</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:13px;">
+        <button style="flex:1; height:46px; border:0; border-radius:12px; background:#25D366; color:#161C24; font-size:14.5px; font-weight:700; font-family:Karla,sans-serif; display:flex; align-items:center; justify-content:center; gap:7px; cursor:pointer;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.8a8.4 8.4 0 0 1-12.2 7.5L4 20.5l1.3-4.1A8.4 8.4 0 1 1 20.5 11.8z"/><path d="M9 9.6h1.6l1 2-1.1.9a6 6 0 0 0 2.9 2.9l.9-1.1 2 1v1.6a1.1 1.1 0 0 1-1.2 1.1 8.7 8.7 0 0 1-7.2-7.2A1.1 1.1 0 0 1 9 9.6z"/></svg>
+          WhatsApp
+        </button>
+        <button style="flex:1; height:46px; border:1px solid #D6DBE2; border-radius:12px; background:#FFFFFF; color:#161C24; font-size:14.5px; font-weight:700; font-family:Karla,sans-serif; display:flex; align-items:center; justify-content:center; gap:7px; cursor:pointer;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.8h3l1.4 3.5-2 1.4a12 12 0 0 0 5.9 5.9l1.4-2 3.5 1.4v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 5 6a2 2 0 0 1 2-2.2z"/></svg>
+          Call
+        </button>
+      </div>
+    </div>
+
+    <!-- card 2 -->
+    <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:16px; padding:14px;">
+      <div style="display:flex; gap:12px;">
+        <div style="width:54px; height:54px; border-radius:13px; background:#E7F2EC; display:flex; align-items:center; justify-content:center; flex:0 0 auto;">
+          <span class="dsp" style="font-size:18px; font-weight:800; color:#0F6B4F;">BW</span>
+        </div>
+        <div style="flex:1; min-width:0;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="dsp" style="font-size:16.5px; font-weight:700; line-height:1.2;">Bergvliet Plumbing Works</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:5px; margin-top:4px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+            <span style="font-size:13.5px; font-weight:700;">4.4</span>
+            <span class="m" style="font-size:13px;">· 11 reviews</span>
+          </div>
+          <div class="m" style="font-size:13px; margin-top:4px;">Bergvliet · 3,1 km away</div>
+        </div>
+        <div style="flex:0 0 auto;">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#8B94A1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9.1A4 4 0 0 1 12 8a4 4 0 0 1 7 2.9C19 15.7 12 20 12 20z"/></svg>
+        </div>
+      </div>
+      <div class="m" style="font-size:13px; margin-top:11px; line-height:1.5;">Bathroom installs · Blocked drains · Solar geysers</div>
+      <div style="display:flex; align-items:center; gap:14px; margin-top:11px;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:6px; height:6px; border-radius:999px; background:#8B94A1; display:block;"></span>
+          <span class="m" style="font-size:12.5px; font-weight:600;">Closed · opens 07:30</span>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:13px;">
+        <button style="flex:1; height:46px; border:1px solid #161C24; border-radius:12px; background:#FFFFFF; color:#161C24; font-size:14.5px; font-weight:700; font-family:Karla,sans-serif; cursor:pointer;">Request a quote</button>
+      </div>
+    </div>
+
+    <!-- inline reassurance row, breaks the card rhythm deliberately -->
+    <div style="display:flex; align-items:flex-start; gap:11px; background:#FBEEF3; border-radius:14px; padding:14px;">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#A8325A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto; margin-top:1px;"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><path d="M12 7.6v.1"/></svg>
+      <div style="font-size:13px; line-height:1.55; color:#161C24;">Only people who recorded a hire here can leave a review. That's why there are 11 of them and not 400.</div>
+    </div>
+
+    <!-- card 3 -->
+    <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:16px; padding:14px;">
+      <div style="display:flex; gap:12px;">
+        <div style="width:54px; height:54px; border-radius:13px; background:#EEF0F3; display:flex; align-items:center; justify-content:center; flex:0 0 auto;">
+          <span class="dsp" style="font-size:18px; font-weight:800; color:#5A6472;">MD</span>
+        </div>
+        <div style="flex:1; min-width:0;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="dsp" style="font-size:16.5px; font-weight:700; line-height:1.2;">Mo's Drain Doctor</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F6B4F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="M12 3l7 2.6v5.2c0 4.4-3 8.1-7 9.2-4-1.1-7-4.8-7-9.2V5.6z"/><path d="M9 12.1l2.2 2.2 4-4.3"/></svg>
+          </div>
+          <div style="display:flex; align-items:center; gap:5px; margin-top:4px;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+            <span style="font-size:13.5px; font-weight:700;">4.4</span>
+            <span class="m" style="font-size:13px;">· 26 reviews</span>
+          </div>
+          <div class="m" style="font-size:13px; margin-top:4px;">Retreat · 4,8 km away</div>
+        </div>
+      </div>
+      <div class="m" style="font-size:13px; margin-top:11px; line-height:1.5;">Drain clearing · CCTV pipe inspection · High-pressure jetting</div>
+      <div style="display:flex; align-items:center; gap:6px; margin-top:11px;">
+        <span style="width:6px; height:6px; border-radius:999px; background:#1FA45E; display:block;"></span>
+        <span style="font-size:12.5px; font-weight:600; color:#0F6B4F;">Open · closes 23:00</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top:13px;">
+        <button style="flex:1; height:46px; border:0; border-radius:12px; background:#25D366; color:#161C24; font-size:14.5px; font-weight:700; font-family:Karla,sans-serif; display:flex; align-items:center; justify-content:center; gap:7px; cursor:pointer;">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.8a8.4 8.4 0 0 1-12.2 7.5L4 20.5l1.3-4.1A8.4 8.4 0 1 1 20.5 11.8z"/><path d="M9 9.6h1.6l1 2-1.1.9a6 6 0 0 0 2.9 2.9l.9-1.1 2 1v1.6a1.1 1.1 0 0 1-1.2 1.1 8.7 8.7 0 0 1-7.2-7.2A1.1 1.1 0 0 1 9 9.6z"/></svg>
+          WhatsApp
+        </button>
+        <button style="flex:1; height:46px; border:1px solid #D6DBE2; border-radius:12px; background:#FFFFFF; color:#161C24; font-size:14.5px; font-weight:700; font-family:Karla,sans-serif; display:flex; align-items:center; justify-content:center; gap:7px; cursor:pointer;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.8h3l1.4 3.5-2 1.4a12 12 0 0 0 5.9 5.9l1.4-2 3.5 1.4v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 5 6a2 2 0 0 1 2-2.2z"/></svg>
+          Call
+        </button>
+      </div>
+    </div>
+
+    <!-- one-to-many escape hatch -->
+    <div style="background:#161C24; border-radius:16px; padding:18px;">
+      <h3 class="dsp" style="font-size:17.5px; font-weight:700; color:#FFFFFF; line-height:1.25;">Don't want to phone around?</h3>
+      <p style="margin:8px 0 14px; font-size:13.5px; line-height:1.55; color:#A3AEBB;">Describe the job once. We send it to open, verified plumbers near Plumstead and they come back to you.</p>
+      <button style="width:100%; height:48px; border:0; border-radius:12px; background:#A8325A; color:#FFFFFF; font-family:'Bricolage Grotesque',Karla,sans-serif; font-size:15.5px; font-weight:700; cursor:pointer;">Get quotes from 3 plumbers</button>
+    </div>
+
+  </div>
+
+  <!-- floating map switch -->
+  <div style="position:absolute; left:50%; bottom:24px; transform:translateX(-50%); display:flex; align-items:center; gap:8px; background:#161C24; border-radius:999px; padding:12px 20px; box-shadow:0 8px 22px rgba(22,28,36,0.28);">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.2L3.5 6.5v13.3L9 17.5l6 2.3 5.5-2.3V4.2L15 6.5z"/><path d="M9 4.2v13.3"/><path d="M15 6.5v13.3"/></svg>
+    <span style="font-size:14px; font-weight:700; color:#FFFFFF;">Map</span>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":1196}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>
