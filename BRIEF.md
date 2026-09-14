@@ -30,25 +30,40 @@ directories are lists; this is vetted, and it knows who's *open right now*.
 ## Stack (decided)
 
 - **Tier 2 app:** React + Vite + Tailwind, GitHub → Netlify.
-- **Database/auth/storage: Firebase** (Firestore + Firebase Auth + Cloud Storage).
-  Replaces the earlier Supabase plan. Netlify still hosts; Firebase is backend only.
-- **Blaze (pay-as-you-go) plan required** — Cloud Functions are needed for rating
-  aggregation, admin custom claims and lead fan-out. Spark alone won't cover it.
-- The old Supabase project `adexrspbgcsnumcgpzgq` is now unused — leave it paused or delete it.
+- **Database: Neon** — serverless Postgres. Free plan gives **100 projects**
+  (against Supabase's 2 active), 0.5 GB storage and 100 CU-hours per project.
+  Compute suspends after 5 min idle and wakes automatically in under a second —
+  it is *not* the manual unpause that made Supabase painful across many clients.
+- **Auth: Neon Auth** (Managed Better Auth, 60k MAU free). Low lock-in on purpose:
+  it is the Better Auth library managed for you, so if the managed service
+  disappoints, self-hosting the same library against the same database is the
+  escape hatch — not a migration.
+- **File storage: Cloudflare R2**, *not* Neon Object Storage. See POPIA below.
+- The old Supabase project `adexrspbgcsnumcgpzgq` is now unused — leave it paused
+  or delete it.
 
-### The one real cost of choosing Firebase
+### The architectural consequence, stated up front
 
-The modular Firebase SDK is heavier than `supabase-js` — roughly 150 KB gzipped for
-app + firestore + auth, against ~40 KB. Against a *prepaid-data* audience that is a
-genuine regression, and it's the project's stated top constraint. **Measure it, don't
-assume it.**
+Supabase and Firebase let the browser talk to the database directly, with RLS or
+security rules standing guard. **Neon does not work that way, and must not be made
+to.** A Postgres connection string in client code is a full-database credential.
 
-Mitigation, which the SEO plan wants anyway: **prerender every public page at build
-time.** Read Firestore in the Vite build, emit static category × suburb pages and
-business profiles. Then the SDK only ships to authenticated flows — dashboard, admin,
-review submission, quote requests. Most visitors never load Firebase at all.
+So the app grows a thin server layer: **Netlify Functions** using
+`@neondatabase/serverless` (HTTP, not TCP — it works in a serverless runtime).
+Every write and every authenticated read goes through a handler that checks who
+is asking. Postgres RLS stays on underneath as defence in depth, but the API
+handlers are the real gate.
 
-Budget: **180 KB on first load** for public pages.
+This is more code than Supabase gave us for free, and it is the honest price of
+the move. It buys back the relational model, a much lighter client bundle, and
+100 project slots.
+
+### What barely matters, because of prerendering
+
+Public pages are generated at build time (see SEO below), so the database does
+almost no runtime work. The free-tier compute and egress allowances are not a
+constraint we will come near at launch — the 0.5 GB storage cap is the one to
+watch, and it is why files live in R2.
 
 ## MVP scope (build this, nothing more)
 
@@ -65,48 +80,51 @@ Budget: **180 KB on first load** for public pages.
 **Later, not now:** payments, featured placements, in-app messaging, mobile app,
 auto-generated mini-sites per business.
 
-## Data model — Firestore (document, not relational)
+## Data model — Postgres
 
-The relational sketch does not port directly. Denormalize deliberately:
+Full DDL in `db/migrations/0001_init.sql`. Two parts of it are load-bearing:
 
-- `businesses/{id}` — name, category, `suburbs_served: []`, description, contact,
-  whatsapp, status (pending|verified|rejected), ownerUid, `ratingAvg`, `ratingCount`,
-  `isOpenNow`, `hours`.
-  Denormalized aggregates (`ratingAvg`/`ratingCount`) are maintained by a Cloud
-  Function or a transaction — never computed client-side across a collection.
-- `businesses/{id}/reviews/{reviewId}` — subcollection. rating, body, authorUid,
-  hireId, status.
-- `hires/{uid}_{businessId}` — the proof-of-transaction. Deliberately a composite key
-  so a security rule can gate review writes with a single `exists()` lookup.
-- `verificationDocs/{businessId}/{docId}` — metadata only. See POPIA below.
-- `reports/{id}` — businessId, reporterUid, reason, status.
-- `profiles/{uid}` — role (user|business|admin). Role also mirrored into an Auth
-  **custom claim**, because security rules must not pay a document read per check.
+**Reviews are gated by a composite foreign key, not by application code.**
+`reviews` references `hires (id, business_id, user_id)` as a triple, and `hire_id`
+is unique. A review that isn't backed by a recorded hire between that exact author
+and that exact business cannot physically exist, and one hire can yield one review.
+The fraud defence is a database constraint — there is no code path to forget.
 
-**Indexes** (`firestore.indexes.json`, committed): the core query is
-`category == X AND suburbs_served array-contains Y ORDER BY ratingAvg desc` — that
-needs a composite index, and it will fail loudly in production without one.
+**Ratings are a denormalised column kept in step by a trigger**, so the directory
+never computes an average across a table to render a card.
 
-## Security rules replace RLS
+Tables: `profiles`, `businesses`, `hires`, `reviews`, `verification_docs`,
+`reports`, `quote_requests`, `quote_request_recipients`.
 
-- Public read on `businesses` **only where `status == "verified"`**. Pending and
-  rejected listings are invisible to everyone but their owner and admins.
-- Review create allowed only if `exists(/hires/$(uid)_$(businessId))`. This is the
-  fraud defence, and it belongs in the rules, not the client.
-- `profiles` self-read/write, role field admin-only.
-- Rules are committed, reviewed and tested (`firebase emulators:exec`) — they are the
-  actual access-control layer, not a formality.
+The one hot query — category + suburb, best-rated first — is served by a GIN index
+on `suburbs_served` plus a `(status, rating_avg desc)` index.
+
+## Access control
+
+Postgres RLS plus checks in the Netlify Function handlers:
+
+- Public reads see `businesses` **only where `status = 'verified'`**. Pending and
+  rejected listings are visible to their owner and to admins, nobody else.
+- Review creation is structurally impossible without the matching hire (above).
+- `verification_docs` is admin-only at every layer, and the API never returns
+  `r2_key` to a browser.
+- Role lives on `profiles.role` and is read server-side per request.
 
 ## Compliance — POPIA (the most commonly-missed piece)
 
 Collecting IDs and proof of address makes this personal information with real duties:
 
 - Explicit consent + a privacy policy stating what's collected and why.
-- Verification docs in **Cloud Storage with a deny-all client read rule** — retrieved
-  only server-side through the Admin SDK, never a public or long-lived URL. Firestore
-  holds metadata (type, checked-on date, reviewer), never the document itself.
+- **Verification documents live in a private Cloudflare R2 bucket** with no public
+  access. The admin UI reaches them through a short-lived signed URL minted
+  server-side; the browser never holds a durable link. Postgres stores the object
+  key, the type, and the date checked — never the file.
+- **Deliberately not Neon Object Storage**, which is still in beta. Everything else
+  in this stack can be beta; the bucket holding copies of people's identity
+  documents cannot. R2 is S3-compatible and mature, and effectively free at this volume.
 - **The UI never displays an ID document.** It displays the *date it was checked.*
-- A retention/deletion policy and a working deletion request path.
+- A retention/deletion policy and a working deletion request path. Deleting a
+  business must delete its R2 objects, not just its rows.
 - Mishandling ID documents is legal exposure, not a polish item.
 
 ## SEO — this is how a directory actually gets traffic
@@ -147,28 +165,23 @@ Full spec in `design/StyleTile.dc.html`; tokens in `design/_tokens.md`.
 - Rands, not ranges. "Callout R450" beats "affordable rates".
 - WhatsApp is the primary contact everywhere. Contact forms are a last resort.
 
-## Working with Firebase from Claude
+## Working with Neon from Claude
 
-There is **no Firebase connector** in claude.ai's connector directory. Firebase ships
-its own MCP server in the CLI instead — on a local machine, in this folder:
+Neon is not in claude.ai's connector directory either. It doesn't need to be —
+the schema is a committed `.sql` file, applied with `psql` or any migration
+runner. That is the whole workflow, and it works from any session.
 
-```
-claude mcp add firebase npx -- -y firebase-tools@latest mcp
-```
-
-Optionally scoped with `--only auth,firestore,storage`. It authenticates from your
-local `firebase login`, so it does not work in a remote/web session.
-
-It's also largely optional: there's no schema migration to apply, and `firestore.rules`,
-`firestore.indexes.json`, `storage.rules` and the seed script are just files in this
-repo, shipped with `firebase deploy`.
+Neon's branching is the useful trick here: fork the database (schema *and* data)
+per preview deploy, test a migration against real data, throw the branch away.
+10 branches per project on the free plan.
 
 ## First moves
 
-1. Create the Firebase project, enable Firestore + Auth + Storage, upgrade to Blaze.
-2. Scaffold Vite + React + Tailwind with the tokens above.
-3. Build the public browse + business detail + WhatsApp quote — the part that delivers
-   value with no listings logic at all — as **prerendered static pages**.
-4. Write and emulator-test `firestore.rules` and `storage.rules` before any real ID
-   document is ever uploaded.
-5. Then registration → admin approval → the quote-request fan-out.
+1. Create the Neon project and apply `db/migrations/0001_init.sql`.
+2. Create the private R2 bucket for verification documents.
+3. Scaffold Vite + React + Tailwind with the tokens in `design/_tokens.md`.
+4. Build the public browse + business detail + WhatsApp quote — the part that
+   delivers value with no listings logic — as **prerendered static pages**, reading
+   Neon at build time. No client-side database access at all on these routes.
+5. Stand up the Netlify Functions API and the auth flow; only then registration →
+   admin approval → the quote-request fan-out.
