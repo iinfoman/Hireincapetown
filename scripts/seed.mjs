@@ -22,9 +22,13 @@ let created = 0, skipped = 0;
 
 try {
   for (const b of businesses) {
+    // One business and its checks go in together or not at all. Without this a
+    // mid-row failure leaves a live listing with no verification records, and
+    // the slug guard below then skips it forever — silently un-vetted.
+    await client.query('begin');
     const { rows: existing } = await client.query(
       'select id from hireincapetown.businesses where slug = $1', [b.slug]);
-    if (existing.length) { skipped++; continue; }
+    if (existing.length) { skipped++; await client.query('rollback'); continue; }
 
     // owner_id is left null for seeded listings: there is no auth user behind
     // them yet, and profiles.id references auth.users. A real signup claims the
@@ -43,13 +47,17 @@ try {
       // storage_path is a placeholder until a real document is uploaded — the
       // row records that a check happened and when, never the document itself.
       await client.query(
-        `insert into hireincapetown.verification_docs (business_id, doc_type, storage_path, checked_at)
-         values ($1, $2, $3, $4)`,
-        [rows[0].id, c.type, `verification/${b.slug}/${c.type}`, c.checked_on]);
+        `insert into hireincapetown.verification_docs (business_id, doc_type, storage_path, checked_at, label)
+         values ($1, $2, $3, $4, $5)`,
+        [rows[0].id, c.type, `verification/${b.slug}/${c.type}`, c.checked_on, c.label ?? null]);
     }
+    await client.query('commit');
     created++;
   }
   console.log(`seeded ${created} businesses, skipped ${skipped} already present`);
+} catch (err) {
+  await client.query('rollback').catch(() => {});
+  throw err;
 } finally {
   await client.end();
 }

@@ -23,7 +23,9 @@ function paintOpenState() {
 function filterOpenOnly() {
   document.querySelectorAll('[data-open-only]').forEach((list) => {
     let shown = 0;
-    list.querySelectorAll('[data-hours]').forEach((item) => {
+    // Direct children only: each card also contains an OpenNow span carrying
+    // its own data-hours, which would otherwise be counted a second time.
+    list.querySelectorAll(':scope > [data-hours]').forEach((item) => {
       let hours = null;
       try { hours = JSON.parse(item.dataset.hours || 'null'); } catch { /* leave null */ }
       const { open } = openState(hours);
@@ -39,7 +41,7 @@ function filterOpenOnly() {
     }
     // If literally nobody is open, showing an empty section is worse than
     // showing the full list.
-    if (shown === 0) list.querySelectorAll('[data-hours]').forEach((i) => { i.hidden = false; });
+    if (shown === 0) list.querySelectorAll(':scope > [data-hours]').forEach((i) => { i.hidden = false; });
   });
 }
 

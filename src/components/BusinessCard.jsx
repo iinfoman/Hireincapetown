@@ -19,7 +19,7 @@ export const BusinessCard = ({ business: b, index = 0, context }) => {
             {verified && <VerifiedBadge />}
           </h3>
           <div className="mt-1"><Rating avg={b.rating_avg} count={b.rating_count} /></div>
-          <p className="mt-1 text-[13px] text-ink-2">{b.suburbs_served[0]}</p>
+          {b.suburbs_served?.[0] && <p className="mt-1 text-[13px] text-ink-2">{b.suburbs_served[0]}</p>}
         </div>
       </div>
 

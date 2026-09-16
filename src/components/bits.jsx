@@ -10,13 +10,21 @@ export const VerifiedBadge = ({ full = false }) =>
     <span className="text-trust" title="Verified business"><Shield size={16} /></span>
   );
 
-export const Rating = ({ avg, count }) => (
-  <span className="flex items-center gap-1.5">
-    <span className="text-star"><Star size={13} /></span>
-    <span className="text-[13.5px] font-bold">{fmtRating(Number(avg))}</span>
-    <span className="text-[13px] text-ink-2">· {count} review{count === 1 ? '' : 's'}</span>
-  </span>
-);
+export const Rating = ({ avg, count }) => {
+  const value = fmtRating(avg);
+  // A newly verified business has no rating. Showing "0,0" would read as a
+  // terrible score rather than an absent one.
+  if (value === null || !count) {
+    return <span className="text-[13px] text-ink-2">No reviews yet</span>;
+  }
+  return (
+    <span className="flex items-center gap-1.5">
+      <span className="text-star"><Star size={13} /></span>
+      <span className="text-[13.5px] font-bold">{value}</span>
+      <span className="text-[13px] text-ink-2">· {count} review{count === 1 ? '' : 's'}</span>
+    </span>
+  );
+};
 
 /** Filled in by the browser — see src/lib/hours.js for why. */
 export const OpenNow = ({ hours, className = '' }) => (
@@ -28,18 +36,33 @@ export const OpenNow = ({ hours, className = '' }) => (
 
 const waLink = (n, text) => `https://wa.me/${n}?text=${encodeURIComponent(text)}`;
 
+/**
+ * Both columns are nullable, and a listing with neither is still a valid
+ * listing. Render only the channels the business actually gave us — never a
+ * dead `tel:` or a `wa.me/null` link.
+ */
 export const ContactRow = ({ business, message, size = 'md' }) => {
   const h = size === 'lg' ? 'min-h-[52px]' : 'min-h-tap';
+  const base = `flex flex-1 items-center justify-center gap-2 rounded-ctl px-4 ${h} text-[14.5px] font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-protea`;
+  const wa = business.whatsapp?.trim();
+  const tel = business.phone?.replace(/[^\d+]/g, '');
+
+  if (!wa && !tel) {
+    return <p className="text-[13px] text-ink-2">No contact details on file yet.</p>;
+  }
+
   return (
     <div className="flex gap-2">
-      <a href={waLink(business.whatsapp, message)} rel="nofollow noopener"
-         className={`flex flex-1 items-center justify-center gap-2 rounded-ctl bg-whatsapp px-4 ${h} text-[14.5px] font-bold text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-protea`}>
-        <Chat size={17} /> WhatsApp
-      </a>
-      <a href={`tel:${business.phone.replace(/\s/g, '')}`}
-         className={`flex flex-1 items-center justify-center gap-2 rounded-ctl border border-line-strong bg-white px-4 ${h} text-[14.5px] font-bold text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-protea`}>
-        <Phone size={16} /> Call
-      </a>
+      {wa && (
+        <a href={waLink(wa, message)} rel="nofollow noopener" className={`${base} bg-whatsapp text-ink`}>
+          <Chat size={17} /> WhatsApp
+        </a>
+      )}
+      {tel && (
+        <a href={`tel:${tel}`} className={`${base} border border-line-strong bg-white text-ink`}>
+          <Phone size={16} /> Call
+        </a>
+      )}
     </div>
   );
 };

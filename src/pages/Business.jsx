@@ -34,6 +34,7 @@ const describeDays = (hours, keys) => {
 
 export const Business = ({ business: b, category, alsoIn }) => {
   const checks = new Map((b.checks ?? []).map((c) => [c.type, c]));
+  const homeSuburb = b.suburbs_served?.[0];
   const message = `Hi ${b.name}, I found you on HireInCapeTown — I need help with ${category?.one ?? 'a job'}.`;
 
   return (
@@ -43,7 +44,7 @@ export const Business = ({ business: b, category, alsoIn }) => {
           <a href="/" className="hover:text-protea">Home</a> <span className="px-1">/</span>
           <a href={`/${b.category}`} className="hover:text-protea">{category?.label ?? b.category}</a>
           <span className="px-1">/</span>
-          <a href={`/${b.category}/${slugify(b.suburbs_served[0])}`} className="hover:text-protea">{b.suburbs_served[0]}</a>
+          {homeSuburb && <a href={`/${b.category}/${slugify(homeSuburb)}`} className="hover:text-protea">{homeSuburb}</a>}
         </nav>
 
         <div className="md:grid md:grid-cols-[1fr_340px] md:gap-10">
@@ -98,10 +99,10 @@ export const Business = ({ business: b, category, alsoIn }) => {
 
             <section className="mt-3.5 rounded-card border border-line bg-white p-4 md:p-6">
               <h2 className="font-dsp text-[17.5px] font-bold">Reviews</h2>
-              {b.rating_count > 0 ? (
+              {b.rating_count > 0 && fmtRating(b.rating_avg) ? (
                 <div className="mt-3.5 flex items-center gap-5">
                   <div className="text-center">
-                    <div className="font-dsp text-[42px] font-extrabold leading-none">{fmtRating(Number(b.rating_avg))}</div>
+                    <div className="font-dsp text-[42px] font-extrabold leading-none">{fmtRating(b.rating_avg)}</div>
                     <div className="mt-1.5 flex justify-center gap-0.5 text-star">
                       {[0, 1, 2, 3, 4].map((i) => <Star key={i} size={13} />)}
                     </div>
@@ -174,7 +175,7 @@ export const Business = ({ business: b, category, alsoIn }) => {
                           <Initials name={o.name} size={36} tone={1} />
                           <span className="min-w-0">
                             <span className="block truncate text-[13.5px] font-semibold group-hover:text-protea">{o.name}</span>
-                            <span className="block text-[12px] text-ink-2">{fmtRating(Number(o.rating_avg))} · {o.suburbs_served[0]}</span>
+                            <span className="block text-[12px] text-ink-2">{[fmtRating(o.rating_avg), o.suburbs_served?.[0]].filter(Boolean).join(' · ')}</span>
                           </span>
                         </a>
                       </li>

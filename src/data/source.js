@@ -14,7 +14,7 @@ const SELECT = `
          b.phone, b.whatsapp, b.status, b.rating_avg, b.rating_count,
          b.callout_from, b.hours,
          coalesce(
-           (select json_agg(json_build_object('type', v.doc_type, 'checked_on', v.checked_at))
+           (select json_agg(json_build_object('type', v.doc_type, 'checked_on', v.checked_at, 'label', v.label))
               from hireincapetown.verification_docs v
              where v.business_id = b.id and v.checked_at is not null),
            '[]'::json) as checks
@@ -53,9 +53,9 @@ export async function loadBusinesses() {
 }
 
 /** Every category × suburb pair that actually has listings. Drives the SEO pages. */
-export async function suburbIndex() {
+export async function suburbIndex(businesses) {
   const { slugify } = await import('../lib/slug.js');
-  const all = await loadBusinesses();
+  const all = businesses ?? (await loadBusinesses());
   const map = new Map();
   for (const b of all) {
     for (const suburb of b.suburbs_served) {

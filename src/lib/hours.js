@@ -24,10 +24,16 @@ export function openState(hours, date = new Date()) {
 
   if (today) {
     const [from, to] = today.map(toMinutes);
-    if (mins >= from && mins < to) {
+    // A closing time before the opening time means the shift runs past midnight
+    // (e.g. 18:00–02:00), so "inside the shift" wraps around the end of the day.
+    const overnight = to <= from;
+    const isOpen = overnight ? (mins >= from || mins < to) : (mins >= from && mins < to);
+    if (isOpen) {
       return { open: true, label: emergency ? 'Open · 24 hr callout' : `Open · closes ${today[1]}`, emergency };
     }
-    if (mins < from) return { open: emergency, label: emergency ? 'Open · 24 hr callout' : `Closed · opens ${today[0]}`, emergency };
+    if (!overnight && mins < from) {
+      return { open: emergency, label: emergency ? 'Open · 24 hr callout' : `Closed · opens ${today[0]}`, emergency };
+    }
   }
   // Shut for the day: find the next day with hours.
   for (let i = 1; i <= 7; i++) {

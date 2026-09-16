@@ -22,6 +22,14 @@ const css = (entry.css ?? []).map((f) => `/${f}`);
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+// Inside a <script> the parser looks for "</script>" before it looks at JSON,
+// so a business description containing one would end the block and run as
+// markup. Escaping < and the separators closes that off for good.
+const ldJson = (o) => JSON.stringify(o)
+  .replace(/</g, '\\u003c')
+  .replace(/\u2028/g, '\\u2028')
+  .replace(/\u2029/g, '\\u2029');
+
 function shell({ title, description, canonical, body, jsonLd }) {
   return `<!doctype html>
 <html lang="en-ZA">
@@ -39,7 +47,7 @@ function shell({ title, description, canonical, body, jsonLd }) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Karla:wght@400;500;600;700&display=swap">
 ${css.map((h) => `<link rel="stylesheet" href="${h}">`).join('\n')}
-${jsonLd ? `<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>` : ''}
+${jsonLd ? `<script type="application/ld+json">${ldJson(jsonLd)}</script>` : ''}
 </head>
 <body>${body}<script type="module" src="${js}"></script></body>
 </html>`;
@@ -53,8 +61,24 @@ async function emit(route, html) {
   pages.push({ route: route || '/', bytes: gzipSync(html).length });
 }
 
-const businesses = await loadBusinesses();
-const index = await suburbIndex();
+const all = await loadBusinesses();
+
+// One malformed row must not take the whole site down. suburbs_served defaults
+// to an empty array in the schema, and a category not in src/lib/categories.js
+// has no pages to link to — skip both, loudly.
+const businesses = all.filter((b) => {
+  if (!b.suburbs_served?.length) {
+    console.warn(`  ! skipped ${b.slug}: no suburbs_served`);
+    return false;
+  }
+  if (!byCategorySlug(b.category)) {
+    console.warn(`  ! skipped ${b.slug}: category "${b.category}" is not in src/lib/categories.js`);
+    return false;
+  }
+  return true;
+});
+
+const index = await suburbIndex(businesses);
 
 // Every suburb that actually has a listing, for the need-bar's dropdown.
 const suburbs = [...new Set(businesses.flatMap((b) => b.suburbs_served))]
@@ -149,11 +173,30 @@ for (const b of businesses) {
 // --- /find: the need-bar's target ------------------------------------------
 // A form GET lands here and bounces to the real page, so the need-bar needs no
 // JavaScript of its own and no serverless function sits in the hot path.
+// The slugs are baked in at build time and the target is checked against them,
+// so a crafted ?category=//evil.com cannot turn this into an open redirect.
+const knownRoutes = JSON.stringify([
+  ...liveCategories.map((c) => `/${c.slug}`),
+  ...[...index.keys()].map((k) => `/${k}`),
+]);
+
 await emit('find', `<!doctype html>
 <html lang="en-ZA"><head><meta charset="utf-8"><meta name="robots" content="noindex">
 <title>Finding businesses…</title></head><body>
-<script>(function(){var p=new URLSearchParams(location.search),c=p.get('category'),s=p.get('suburb');
-location.replace(c?(s?'/'+c+'/'+s:'/'+c):'/');})();</script>
+<script>(function(){
+  var ok = ${knownRoutes};
+  var p = new URLSearchParams(location.search);
+  var c = (p.get('category') || '').toLowerCase();
+  var s = (p.get('suburb') || '').toLowerCase();
+  var slug = /^[a-z0-9-]+$/;
+  var target = '/';
+  if (slug.test(c)) {
+    var want = slug.test(s) ? '/' + c + '/' + s : '/' + c;
+    if (ok.indexOf(want) !== -1) target = want;
+    else if (ok.indexOf('/' + c) !== -1) target = '/' + c;
+  }
+  location.replace(target);
+})();</script>
 <noscript><p>Choose a service from the <a href="/">home page</a>.</p></noscript>
 </body></html>`);
 
