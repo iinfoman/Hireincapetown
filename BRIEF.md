@@ -38,7 +38,11 @@ directories are lists; this is vetted, and it knows who's *open right now*.
   row in `hireincapetown.profiles`, and every policy checks that, never "is signed
   in". `is_member()` and `is_admin()` exist for exactly this reason.
 - **File storage: a private Supabase Storage bucket** for verification documents.
-- The dormant `hire in capetown` project (`adexrspbgcsnumcgpzgq`) is now unused.
+- The original standalone `hire in capetown` Supabase project
+  (`adexrspbgcsnumcgpzgq`, created July 2025) was never built on — no schema was
+  ever applied and no code referenced it. Being deleted. If you ever want this app
+  in its own project again, start fresh: `pg_dump --schema=hireincapetown` lifts it
+  out of Solar whole.
 
 ### Why this shape, and what it costs
 
