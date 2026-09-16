@@ -34,25 +34,47 @@ npm run preview
 
 **No database is required to build.** Without `DATABASE_URL`, the build reads
 [`db/seed.json`](db/seed.json), so a fresh clone produces a working site with no
-credentials. Set `DATABASE_URL` and the same build reads Neon instead — the
+credentials. Set `DATABASE_URL` and the same build reads Supabase instead — the
 only read path is `src/data/source.js`.
 
-## Setting up the database
+## The database is shared — read this before touching it
+
+This app's tables live in the **`hireincapetown` schema of the SolarinstallersSA
+Supabase project** (`alogcohoopgzerrxheiw`). Solar owns `public` and has its own
+`installers`, `ads`, `reviews` and `settings` tables. Both apps have a table
+called `reviews`; the schema split is the only thing keeping them apart.
+
+Two rules, always:
+
+1. **Never run unqualified DDL.** Every statement names the schema. A bare
+   `create table businesses` lands in Solar's `public`.
+2. **Never alter or drop anything in `public`.** That is a different application.
+
+Consequences worth knowing: a pause or a restore-from-backup hits **both** apps
+together, and `auth.users` is shared — a Solar account is an account here too.
+Membership of this app is a row in `hireincapetown.profiles`, and every policy
+checks that via `is_member()`, never "is signed in".
 
 ```bash
-cp .env.example .env          # then fill in DATABASE_URL from the Neon console
+cp .env.example .env          # DATABASE_URL from Supabase → Settings → Database
 npm run db:push               # applies db/migrations/0001_init.sql
-npm run db:seed               # loads db/seed.json into Neon (idempotent)
+npm run db:seed               # loads db/seed.json (idempotent on slug)
 ```
 
-Two parts of the schema are load-bearing and should survive refactoring:
+Three parts of the schema are load-bearing and should survive refactoring:
 
 - **`reviews` carries a composite foreign key to `hires (id, business_id, user_id)`,
   with `hire_id` unique.** A review unbacked by a recorded hire between that exact
   author and that exact business cannot exist, and one hire yields one review.
   The fraud defence is a database constraint, not a code path someone can forget.
-- **`verification_docs` stores a Cloudflare R2 object key** — never the file, never
-  a URL. See the POPIA section of the brief.
+  Verified against the live database: a review inserted with a fabricated
+  `hire_id` is rejected with a foreign key violation.
+- **`verification_docs` stores a Storage object path** — never the file, never a
+  URL. RLS is on with *no policy at all*, so every client role is denied by
+  construction. See the POPIA section of the brief.
+- **The schema is not granted to `anon` or `authenticated`.** Client roles cannot
+  see into it at all; the build reads as the owner. When the authenticated flows
+  arrive, grant deliberately and narrowly rather than opening the schema.
 
 ## Layout
 

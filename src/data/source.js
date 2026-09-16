@@ -1,10 +1,13 @@
 // One read path for the whole build.
 //
-// With DATABASE_URL set this queries Neon. Without it, it falls back to
-// db/seed.json — which is how the site builds before the database exists, and
-// how a contributor gets a working site with no credentials at all.
+// The database is shared with the SolarinstallersSA project, so every query
+// here is schema-qualified to `hireincapetown` and nothing reads `public`.
+//
+// With DATABASE_URL set this queries Supabase over a direct Postgres
+// connection. Without it, it falls back to db/seed.json — which is how the site
+// builds before the database exists, and how a contributor gets a working site
+// with no credentials at all.
 import { readFile } from 'node:fs/promises';
-import { slugify } from '../lib/slug.js';
 
 const SELECT = `
   select b.slug, b.name, b.category, b.suburbs_served, b.services, b.description,
@@ -12,10 +15,10 @@ const SELECT = `
          b.callout_from, b.hours,
          coalesce(
            (select json_agg(json_build_object('type', v.doc_type, 'checked_on', v.checked_at))
-              from verification_docs v
+              from hireincapetown.verification_docs v
              where v.business_id = b.id and v.checked_at is not null),
            '[]'::json) as checks
-    from businesses b
+    from hireincapetown.businesses b
    where b.status = 'verified'
    order by b.rating_avg desc nulls last, b.rating_count desc`;
 
@@ -25,10 +28,19 @@ export async function loadBusinesses() {
   if (cache) return cache;
 
   if (process.env.DATABASE_URL) {
-    const { neon } = await import('@neondatabase/serverless');
-    const sql = neon(process.env.DATABASE_URL);
-    cache = await sql(SELECT);
-    console.log(`  data: ${cache.length} verified businesses from Neon`);
+    const { default: pg } = await import('pg');
+    const client = new pg.Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    });
+    await client.connect();
+    try {
+      const { rows } = await client.query(SELECT);
+      cache = rows;
+    } finally {
+      await client.end();
+    }
+    console.log(`  data: ${cache.length} verified businesses from Supabase (hireincapetown schema)`);
   } else {
     const raw = JSON.parse(await readFile(new URL('../../db/seed.json', import.meta.url), 'utf8'));
     // The public site only ever shows verified listings — mirror that here so
@@ -42,6 +54,7 @@ export async function loadBusinesses() {
 
 /** Every category × suburb pair that actually has listings. Drives the SEO pages. */
 export async function suburbIndex() {
+  const { slugify } = await import('../lib/slug.js');
   const all = await loadBusinesses();
   const map = new Map();
   for (const b of all) {

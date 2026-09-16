@@ -30,40 +30,46 @@ directories are lists; this is vetted, and it knows who's *open right now*.
 ## Stack (decided)
 
 - **Tier 2 app:** React + Vite + Tailwind, GitHub → Netlify.
-- **Database: Neon** — serverless Postgres. Free plan gives **100 projects**
-  (against Supabase's 2 active), 0.5 GB storage and 100 CU-hours per project.
-  Compute suspends after 5 min idle and wakes automatically in under a second —
-  it is *not* the manual unpause that made Supabase painful across many clients.
-- **Auth: Neon Auth** (Managed Better Auth, 60k MAU free). Low lock-in on purpose:
-  it is the Better Auth library managed for you, so if the managed service
-  disappoints, self-hosting the same library against the same database is the
-  escape hatch — not a migration.
-- **File storage: Cloudflare R2**, *not* Neon Object Storage. See POPIA below.
-- The old Supabase project `adexrspbgcsnumcgpzgq` is now unused — leave it paused
-  or delete it.
+- **Database: Supabase, sharing the `SolarinstallersSA` project**
+  (`alogcohoopgzerrxheiw`, eu-west-1). HireInCapeTown lives in its own Postgres
+  schema, `hireincapetown`; Solar keeps `public` and is untouched.
+- **Auth: Supabase Auth — shared with Solar.** `auth.users` is one table per
+  project, so a Solar account is an account here too. Membership of this app is a
+  row in `hireincapetown.profiles`, and every policy checks that, never "is signed
+  in". `is_member()` and `is_admin()` exist for exactly this reason.
+- **File storage: a private Supabase Storage bucket** for verification documents.
+- The dormant `hire in capetown` project (`adexrspbgcsnumcgpzgq`) is now unused.
 
-### The architectural consequence, stated up front
+### Why this shape, and what it costs
 
-Supabase and Firebase let the browser talk to the database directly, with RLS or
-security rules standing guard. **Neon does not work that way, and must not be made
-to.** A Postgres connection string in client code is a full-database credential.
+The free plan allows 2 active projects and auto-pauses anything idle for about a
+week. Sharing one project with Solar keeps both apps inside that budget. These
+are the costs, accepted knowingly:
 
-So the app grows a thin server layer: **Netlify Functions** using
-`@neondatabase/serverless` (HTTP, not TCP — it works in a serverless runtime).
-Every write and every authenticated read goes through a handler that checks who
-is asking. Postgres RLS stays on underneath as defence in depth, but the API
-handlers are the real gate.
+- **One lifecycle.** If the shared project pauses or is restored from backup,
+  BOTH sites pause or roll back together. There is no way to move one without
+  the other.
+- **One user pool.** Handled by the membership rule above, but it must never be
+  forgotten in a new policy.
+- **One blast radius.** HireInCapeTown holds ID documents. They now sit in the
+  same project as an unrelated solar directory.
+- **Harder to separate later.** Mitigated by the schema split: `pg_dump
+  --schema=hireincapetown` lifts this app out whole if it ever needs its own home.
 
-This is more code than Supabase gave us for free, and it is the honest price of
-the move. It buys back the relational model, a much lighter client bundle, and
-100 project slots.
+### The architectural consequence
+
+Build-time reads use a **direct Postgres connection**, not PostgREST, so the
+`hireincapetown` schema does not need to be exposed over the API for the public
+site to work — and while it stays unexposed, no client can reach these tables at
+all. When the authenticated flows arrive, either expose the schema in
+Settings → API, or put them behind Netlify Functions with the service role.
 
 ### What barely matters, because of prerendering
 
 Public pages are generated at build time (see SEO below), so the database does
-almost no runtime work. The free-tier compute and egress allowances are not a
-constraint we will come near at launch — the 0.5 GB storage cap is the one to
-watch, and it is why files live in R2.
+almost no runtime work. Storage is the limit to watch, and it is shared with
+Solar — which is another reason verification documents must be pruned on a
+retention schedule, not kept forever.
 
 ## MVP scope (build this, nothing more)
 
@@ -101,27 +107,32 @@ on `suburbs_served` plus a `(status, rating_avg desc)` index.
 
 ## Access control
 
-Postgres RLS plus checks in the Netlify Function handlers:
+RLS is on for every table, default deny, and the public internet may read
+verified listings and nothing else.
 
-- Public reads see `businesses` **only where `status = 'verified'`**. Pending and
-  rejected listings are visible to their owner and to admins, nobody else.
-- Review creation is structurally impossible without the matching hire (above).
-- `verification_docs` is admin-only at every layer, and the API never returns
-  `r2_key` to a browser.
-- Role lives on `profiles.role` and is read server-side per request.
+- `businesses`: public read **only where `status = 'verified'`**. Owners and
+  admins see their own pending and rejected rows.
+- `reviews`: insert allowed only when the referenced hire belongs to the author
+  and to that business — the same rule the composite foreign key enforces,
+  restated at the row level.
+- `verification_docs`: **RLS on and no policy at all.** Nothing grants access, so
+  every client role is denied by construction. Reachable only server-side with
+  the service role.
+- Because `auth.users` is shared with Solar, no policy may treat "signed in" as
+  "belongs here". Use `hireincapetown.is_member()`.
 
 ## Compliance — POPIA (the most commonly-missed piece)
 
 Collecting IDs and proof of address makes this personal information with real duties:
 
 - Explicit consent + a privacy policy stating what's collected and why.
-- **Verification documents live in a private Cloudflare R2 bucket** with no public
-  access. The admin UI reaches them through a short-lived signed URL minted
+- **Verification documents live in a private Supabase Storage bucket** with no
+  public access. The admin UI reaches them through a short-lived signed URL minted
   server-side; the browser never holds a durable link. Postgres stores the object
-  key, the type, and the date checked — never the file.
-- **Deliberately not Neon Object Storage**, which is still in beta. Everything else
-  in this stack can be beta; the bucket holding copies of people's identity
-  documents cannot. R2 is S3-compatible and mature, and effectively free at this volume.
+  path, the type, and the date checked — never the file.
+- The bucket is **private and separate from anything Solar uses**. Since the two
+  apps now share a project, bucket separation plus RLS is the only thing keeping
+  ID documents out of the other app's reach — treat it as load-bearing.
 - **The UI never displays an ID document.** It displays the *date it was checked.*
 - A retention/deletion policy and a working deletion request path. Deleting a
   business must delete its R2 objects, not just its rows.
@@ -165,23 +176,25 @@ Full spec in `design/StyleTile.dc.html`; tokens in `design/_tokens.md`.
 - Rands, not ranges. "Callout R450" beats "affordable rates".
 - WhatsApp is the primary contact everywhere. Contact forms are a last resort.
 
-## Working with Neon from Claude
+## Working with the database from Claude
 
-Neon is not in claude.ai's connector directory either. It doesn't need to be —
-the schema is a committed `.sql` file, applied with `psql` or any migration
-runner. That is the whole workflow, and it works from any session.
+The Supabase connector is available in this session, so schema changes can be
+applied directly. Everything is also committed as SQL, which is the source of
+truth: `db/migrations/0001_init.sql`.
 
-Neon's branching is the useful trick here: fork the database (schema *and* data)
-per preview deploy, test a migration against real data, throw the branch away.
-10 branches per project on the free plan.
+Because the project is shared, two rules when applying anything:
+
+1. **Never run unqualified DDL.** Every statement names the `hireincapetown`
+   schema. A bare `create table businesses` would land in Solar's `public`.
+2. **Never drop or alter anything in `public`.** That is Solar's app.
 
 ## First moves
 
-1. Create the Neon project and apply `db/migrations/0001_init.sql`.
-2. Create the private R2 bucket for verification documents.
-3. Scaffold Vite + React + Tailwind with the tokens in `design/_tokens.md`.
-4. Build the public browse + business detail + WhatsApp quote — the part that
-   delivers value with no listings logic — as **prerendered static pages**, reading
-   Neon at build time. No client-side database access at all on these routes.
-5. Stand up the Netlify Functions API and the auth flow; only then registration →
-   admin approval → the quote-request fan-out.
+1. Apply `db/migrations/0001_init.sql` to the shared project (creates the
+   `hireincapetown` schema — nothing in `public` is touched).
+2. Create the private Storage bucket for verification documents.
+3. Scaffold is done: Vite + React + Tailwind using `design/_tokens.md`.
+4. Public browse, category × suburb pages and business profiles are **built** and
+   prerendered, reading the database at build time. No client-side database
+   access on these routes.
+5. Next: the auth flow and registration → admin approval → quote-request fan-out.
