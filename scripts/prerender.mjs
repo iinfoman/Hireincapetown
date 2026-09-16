@@ -10,6 +10,7 @@ import { render } from '../dist/server/entry-server.js';
 import { loadBusinesses, suburbIndex } from '../src/data/source.js';
 import { CATEGORIES, byCategorySlug } from '../src/lib/categories.js';
 import { slugify } from '../src/lib/slug.js';
+import { ldJson } from '../src/lib/jsonld.js';
 
 const OUT = 'dist/client';
 const SITE = process.env.SITE_URL || 'https://hireincapetown.co.za';
@@ -21,14 +22,6 @@ const js = `/${entry.file}`;
 const css = (entry.css ?? []).map((f) => `/${f}`);
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-// Inside a <script> the parser looks for "</script>" before it looks at JSON,
-// so a business description containing one would end the block and run as
-// markup. Escaping < and the separators closes that off for good.
-const ldJson = (o) => JSON.stringify(o)
-  .replace(/</g, '\\u003c')
-  .replace(/\u2028/g, '\\u2028')
-  .replace(/\u2029/g, '\\u2029');
 
 function shell({ title, description, canonical, body, jsonLd }) {
   return `<!doctype html>

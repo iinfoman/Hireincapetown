@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # Regression tests for the things that are easy to break silently:
+      # overnight trading hours, absent ratings, and the JSON-LD escaping that
+      # stands between a user-submitted description and stored XSS.
+      - name: Unit tests
+        run: npm test
+
+      # The build is also the performance gate — scripts/prerender.mjs exits
+      # non-zero if any page exceeds 180 KB gzipped including CSS and JS.
+      # The audience is on prepaid mobile data, so that ceiling is a product
+      # requirement, not engineering hygiene.
+      #
+      # No DATABASE_URL here on purpose: this proves a clean checkout still
+      # builds from db/seed.json with no credentials.
+      - name: Build and enforce the page-weight budget
+        run: npm run build
+
+      - name: Check the expected pages were emitted
+        run: |
+          test -f dist/client/index.html
+          test -f dist/client/sitemap.xml
+          test -f dist/client/robots.txt
+          pages=$(find dist/client -name index.html | wc -l)
+          echo "emitted $pages pages"
+          test "$pages" -ge 50
