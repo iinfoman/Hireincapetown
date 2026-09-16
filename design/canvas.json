@@ -1,0 +1,29 @@
+{
+  "pages": [
+    { "id": "page-1", "name": "Mobile flow" },
+    { "id": "page-2", "name": "Desktop & system" }
+  ],
+  "artboards": [
+    { "file": "Main.dc.html",      "x": 0,    "y": 0, "w": 390,  "h": 1568, "title": "Home",             "page": "page-1" },
+    { "file": "Results.dc.html",   "x": 490,  "y": 0, "w": 390,  "h": 1196, "title": "Results",          "page": "page-1" },
+    { "file": "MapMode.dc.html",   "x": 980,  "y": 0, "w": 390,  "h": 844,  "title": "Map mode",         "page": "page-1" },
+    { "file": "Profile.dc.html",   "x": 1470, "y": 0, "w": 390,  "h": 2064, "title": "Business profile", "page": "page-1" },
+    { "file": "Quote.dc.html",     "x": 1960, "y": 0, "w": 390,  "h": 1044, "title": "Request a quote",  "page": "page-1" },
+    { "file": "Dashboard.dc.html", "x": 2450, "y": 0, "w": 390,  "h": 1192, "title": "Business dashboard", "page": "page-1" },
+    { "file": "DesktopHome.dc.html", "x": 0,    "y": 0, "w": 1440, "h": 1420, "title": "Desktop home",  "page": "page-2" },
+    { "file": "StyleTile.dc.html",   "x": 1600, "y": 0, "w": 920,  "h": 1392, "title": "Design system", "page": "page-2" }
+  ],
+  "annotations": [
+    { "id": "flow", "x": 0, "y": -150, "w": 900, "page": "page-1",
+      "text": "The whole product is one sentence: I need something -> show me who can do it -> contact them now.\nEvery screen left to right is one step of that. Nothing else competes for the primary action." },
+    { "id": "needbar", "x": 0, "y": 1630, "w": 390, "page": "page-1",
+      "text": "Signature element: the need-bar.\nWhat / where / open-now collapsed into one card so the whole decision happens in a single glance, before any scrolling." },
+    { "id": "trust", "x": 1470, "y": 2126, "w": 390, "page": "page-1",
+      "text": "\"What we checked\" sits above the fold's fold, with dates and one honest gap (no liability cover).\nA badge nobody can interrogate is worth nothing." },
+    { "id": "supply", "x": 2450, "y": 1254, "w": 390, "page": "page-1",
+      "text": "Leads come first on the dashboard, not vanity stats. The upgrade sits at the bottom and cites a real number (421 searches), so it reads as useful rather than as a pitch." },
+    { "id": "seo", "x": 0, "y": 1482, "w": 700, "page": "page-2",
+      "text": "The \"People are searching for\" grid is the SEO engine made visible - one indexable page per category x suburb, which is how a directory actually gets traffic." }
+  ],
+  "launch": { "view": "canvas", "page": "page-1" }
+}

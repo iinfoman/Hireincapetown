@@ -1,0 +1,269 @@
+[
+  {
+    "slug": "kritzinger-plumbing-diep-river",
+    "name": "Kritzinger Plumbing & Drains",
+    "category": "plumbers",
+    "suburbs_served": ["Diep River", "Plumstead", "Bergvliet", "Retreat", "Constantia", "Muizenberg", "Wynberg"],
+    "services": ["Burst pipes", "Blocked drains", "Geyser repair & replacement", "Leak detection", "Bathroom plumbing", "Insurance quotes"],
+    "description": "Wynand Kritzinger has run the business out of Diep River since 2009, with three vans and a standing after-hours rota. Most work is within 12 km. Burst pipes and geyser failures get priority over scheduled jobs, and he'll tell you straight if he can't get there tonight.",
+    "phone": "021 712 4408",
+    "whatsapp": "27824319076",
+    "status": "verified",
+    "rating_avg": 4.8,
+    "rating_count": 213,
+    "callout_from": 450,
+    "hours": { "mon": ["07:30", "17:00"], "tue": ["07:30", "17:00"], "wed": ["07:30", "17:00"], "thu": ["07:30", "17:00"], "fri": ["07:30", "17:00"], "sat": ["08:00", "13:00"], "sun": null, "emergency24h": true },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-03-11" },
+      { "type": "proof_of_address", "checked_on": "2026-03-11" },
+      { "type": "trade_registration", "checked_on": "2026-04-02", "label": "PIRB plumber registration" }
+    ]
+  },
+  {
+    "slug": "mos-drain-doctor-retreat",
+    "name": "Mo's Drain Doctor",
+    "category": "plumbers",
+    "suburbs_served": ["Retreat", "Steenberg", "Lakeside", "Muizenberg", "Grassy Park"],
+    "services": ["Drain clearing", "CCTV pipe inspection", "High-pressure jetting", "Blocked toilets"],
+    "description": "Drains only — that's the whole business, and it's why the van carries a camera and a jetter rather than a bit of everything. Mogamat works Retreat and the south peninsula, late most nights.",
+    "phone": "021 701 9930",
+    "whatsapp": "27736642201",
+    "status": "verified",
+    "rating_avg": 4.4,
+    "rating_count": 26,
+    "callout_from": 380,
+    "hours": { "mon": ["08:00", "23:00"], "tue": ["08:00", "23:00"], "wed": ["08:00", "23:00"], "thu": ["08:00", "23:00"], "fri": ["08:00", "23:00"], "sat": ["08:00", "18:00"], "sun": ["09:00", "15:00"], "emergency24h": false },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-05-20" },
+      { "type": "proof_of_address", "checked_on": "2026-05-20" },
+      { "type": "trade_registration", "checked_on": "2026-05-28", "label": "PIRB plumber registration" }
+    ]
+  },
+  {
+    "slug": "bergvliet-plumbing-works",
+    "name": "Bergvliet Plumbing Works",
+    "category": "plumbers",
+    "suburbs_served": ["Bergvliet", "Meadowridge", "Constantia", "Diep River"],
+    "services": ["Bathroom installations", "Blocked drains", "Solar geysers", "Pipe replacement"],
+    "description": "Two-person outfit doing mostly bathroom renovations and solar geyser installs. Books a week or two out — not the people to call at midnight, and they say so.",
+    "phone": "021 715 6621",
+    "whatsapp": "27833307714",
+    "status": "pending",
+    "rating_avg": 4.4,
+    "rating_count": 11,
+    "callout_from": 520,
+    "hours": { "mon": ["07:30", "16:30"], "tue": ["07:30", "16:30"], "wed": ["07:30", "16:30"], "thu": ["07:30", "16:30"], "fri": ["07:30", "15:00"], "sat": null, "sun": null, "emergency24h": false },
+    "checks": [{ "type": "id_document", "checked_on": "2026-08-30" }]
+  },
+  {
+    "slug": "steenberg-pipe-and-geyser",
+    "name": "Steenberg Pipe & Geyser",
+    "category": "plumbers",
+    "suburbs_served": ["Steenberg", "Retreat", "Tokai", "Kirstenhof", "Lakeside"],
+    "services": ["Geyser replacement", "Burst pipes", "Leak detection", "Water meters"],
+    "description": "Geyser specialists working with most of the short-term insurers, so the paperwork side is handled. Faried has been doing this run for eleven years.",
+    "phone": "021 706 3382",
+    "whatsapp": "27825518840",
+    "status": "verified",
+    "rating_avg": 4.6,
+    "rating_count": 74,
+    "callout_from": 495,
+    "hours": { "mon": ["07:00", "17:00"], "tue": ["07:00", "17:00"], "wed": ["07:00", "17:00"], "thu": ["07:00", "17:00"], "fri": ["07:00", "17:00"], "sat": ["08:00", "12:00"], "sun": null, "emergency24h": true },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-02-14" },
+      { "type": "proof_of_address", "checked_on": "2026-02-14" },
+      { "type": "trade_registration", "checked_on": "2026-02-19", "label": "PIRB plumber registration" },
+      { "type": "liability_cover", "checked_on": "2026-06-01" }
+    ]
+  },
+  {
+    "slug": "southern-line-plumbing-wynberg",
+    "name": "Southern Line Plumbing",
+    "category": "plumbers",
+    "suburbs_served": ["Wynberg", "Plumstead", "Claremont", "Kenilworth", "Ottery"],
+    "services": ["General plumbing", "Blocked drains", "Taps & mixers", "Toilet repairs"],
+    "description": "Small general plumbing round covering the Wynberg to Claremont strip. Lindiwe took over the round from her father in 2021 and kept most of the customers.",
+    "phone": "021 762 1147",
+    "whatsapp": "27794420318",
+    "status": "verified",
+    "rating_avg": 4.9,
+    "rating_count": 38,
+    "callout_from": 400,
+    "hours": { "mon": ["08:00", "17:00"], "tue": ["08:00", "17:00"], "wed": ["08:00", "17:00"], "thu": ["08:00", "17:00"], "fri": ["08:00", "16:00"], "sat": ["08:30", "12:30"], "sun": null, "emergency24h": false },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-01-22" },
+      { "type": "proof_of_address", "checked_on": "2026-01-22" },
+      { "type": "trade_registration", "checked_on": "2026-01-30", "label": "PIRB plumber registration" }
+    ]
+  },
+
+  {
+    "slug": "vanguard-electrical-athlone",
+    "name": "Vanguard Electrical",
+    "category": "electricians",
+    "suburbs_served": ["Athlone", "Rylands", "Gatesville", "Lansdowne", "Claremont"],
+    "services": ["COC certificates", "DB board upgrades", "Fault finding", "Inverter installs", "Plug points"],
+    "description": "Mostly COCs for property transfers and inverter installs, which is where the work has gone since loadshedding. Registered with the Department of Labour, and the certificate number is on every invoice.",
+    "phone": "021 696 5512",
+    "whatsapp": "27736128805",
+    "status": "verified",
+    "rating_avg": 4.7,
+    "rating_count": 156,
+    "callout_from": 550,
+    "hours": { "mon": ["07:30", "17:00"], "tue": ["07:30", "17:00"], "wed": ["07:30", "17:00"], "thu": ["07:30", "17:00"], "fri": ["07:30", "16:00"], "sat": ["08:00", "13:00"], "sun": null, "emergency24h": true },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-04-08" },
+      { "type": "proof_of_address", "checked_on": "2026-04-08" },
+      { "type": "trade_registration", "checked_on": "2026-04-15", "label": "Registered electrical contractor" },
+      { "type": "liability_cover", "checked_on": "2026-04-15" }
+    ]
+  },
+  {
+    "slug": "brackenfell-sparks-bellville",
+    "name": "Brackenfell Sparks",
+    "category": "electricians",
+    "suburbs_served": ["Bellville", "Brackenfell", "Durbanville", "Kuils River", "Parow"],
+    "services": ["COC certificates", "Fault finding", "Geyser element replacement", "Outdoor lighting"],
+    "description": "Northern suburbs round, two vans. Riaan does the commercial work and his brother covers domestic callouts.",
+    "phone": "021 981 7704",
+    "whatsapp": "27828896613",
+    "status": "verified",
+    "rating_avg": 4.3,
+    "rating_count": 62,
+    "callout_from": 480,
+    "hours": { "mon": ["07:00", "16:30"], "tue": ["07:00", "16:30"], "wed": ["07:00", "16:30"], "thu": ["07:00", "16:30"], "fri": ["07:00", "16:30"], "sat": null, "sun": null, "emergency24h": false },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-07-03" },
+      { "type": "trade_registration", "checked_on": "2026-07-09", "label": "Registered electrical contractor" }
+    ]
+  },
+  {
+    "slug": "khaya-power-khayelitsha",
+    "name": "Khaya Power Electrical",
+    "category": "electricians",
+    "suburbs_served": ["Khayelitsha", "Mfuleni", "Mitchells Plain", "Philippi"],
+    "services": ["Prepaid meter faults", "DB boards", "House wiring", "COC certificates"],
+    "description": "Sipho works the Khayelitsha and Mitchells Plain side, a lot of prepaid meter faults and rewiring. Cash or EFT, quotes given before any work starts.",
+    "phone": "021 361 2290",
+    "whatsapp": "27714455902",
+    "status": "verified",
+    "rating_avg": 4.8,
+    "rating_count": 44,
+    "callout_from": 350,
+    "hours": { "mon": ["08:00", "18:00"], "tue": ["08:00", "18:00"], "wed": ["08:00", "18:00"], "thu": ["08:00", "18:00"], "fri": ["08:00", "18:00"], "sat": ["08:00", "14:00"], "sun": null, "emergency24h": false },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-06-11" },
+      { "type": "proof_of_address", "checked_on": "2026-06-11" },
+      { "type": "trade_registration", "checked_on": "2026-06-20", "label": "Registered electrical contractor" }
+    ]
+  },
+
+  {
+    "slug": "spotless-sisters-mitchells-plain",
+    "name": "Spotless Sisters Cleaning",
+    "category": "cleaning",
+    "suburbs_served": ["Mitchells Plain", "Grassy Park", "Retreat", "Lansdowne", "Ottery"],
+    "services": ["Deep cleaning", "Regular weekly clean", "Move-out cleans", "Post-builders clean"],
+    "description": "Six cleaners, mostly regular weekly domestic work with move-out cleans between. Charlene quotes per job rather than per hour so there are no surprises at the end.",
+    "phone": "021 374 8820",
+    "whatsapp": "27762203355",
+    "status": "verified",
+    "rating_avg": 4.9,
+    "rating_count": 97,
+    "callout_from": 420,
+    "hours": { "mon": ["07:00", "17:00"], "tue": ["07:00", "17:00"], "wed": ["07:00", "17:00"], "thu": ["07:00", "17:00"], "fri": ["07:00", "17:00"], "sat": ["08:00", "14:00"], "sun": null, "emergency24h": false },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-05-02" },
+      { "type": "proof_of_address", "checked_on": "2026-05-02" }
+    ]
+  },
+  {
+    "slug": "table-bay-cleaning-sea-point",
+    "name": "Table Bay Cleaning Co",
+    "category": "cleaning",
+    "suburbs_served": ["Sea Point", "Green Point", "Mouille Point", "Bantry Bay", "Camps Bay"],
+    "services": ["Holiday-let turnarounds", "Deep cleaning", "Window cleaning", "Laundry service"],
+    "description": "Almost entirely Airbnb and holiday-let turnarounds along the Atlantic Seaboard, which means same-day slots and a key-handling routine.",
+    "phone": "021 434 1180",
+    "whatsapp": "27847718264",
+    "status": "verified",
+    "rating_avg": 4.5,
+    "rating_count": 133,
+    "callout_from": 650,
+    "hours": { "mon": ["08:00", "18:00"], "tue": ["08:00", "18:00"], "wed": ["08:00", "18:00"], "thu": ["08:00", "18:00"], "fri": ["08:00", "18:00"], "sat": ["08:00", "18:00"], "sun": ["09:00", "16:00"], "emergency24h": false },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-03-27" },
+      { "type": "proof_of_address", "checked_on": "2026-03-27" },
+      { "type": "liability_cover", "checked_on": "2026-04-04" }
+    ]
+  },
+  {
+    "slug": "fresh-start-cleaning-bellville",
+    "name": "Fresh Start Cleaning",
+    "category": "cleaning",
+    "suburbs_served": ["Bellville", "Parow", "Goodwood", "Durbanville"],
+    "services": ["Office cleaning", "Regular domestic clean", "Carpet cleaning"],
+    "description": "Office contracts in the northern suburbs during the week, domestic work on Saturdays. Nomsa has run it since 2018.",
+    "phone": "021 945 3367",
+    "whatsapp": "27731129947",
+    "status": "verified",
+    "rating_avg": 4.2,
+    "rating_count": 19,
+    "callout_from": 390,
+    "hours": { "mon": ["06:00", "15:00"], "tue": ["06:00", "15:00"], "wed": ["06:00", "15:00"], "thu": ["06:00", "15:00"], "fri": ["06:00", "15:00"], "sat": ["08:00", "13:00"], "sun": null, "emergency24h": false },
+    "checks": [{ "type": "id_document", "checked_on": "2026-08-14" }, { "type": "proof_of_address", "checked_on": "2026-08-14" }]
+  },
+
+  {
+    "slug": "peninsula-movers-observatory",
+    "name": "Peninsula Movers",
+    "category": "movers",
+    "suburbs_served": ["Observatory", "Woodstock", "Salt River", "Mowbray", "Rondebosch", "Claremont"],
+    "services": ["Household moves", "Student moves", "Furniture delivery", "Packing service"],
+    "description": "One 8-ton truck and a bakkie, so small flats and student moves are the sweet spot rather than four-bedroom houses. Busy at month-end.",
+    "phone": "021 447 2298",
+    "whatsapp": "27726638190",
+    "status": "verified",
+    "rating_avg": 4.6,
+    "rating_count": 88,
+    "callout_from": 1200,
+    "hours": { "mon": ["07:00", "17:00"], "tue": ["07:00", "17:00"], "wed": ["07:00", "17:00"], "thu": ["07:00", "17:00"], "fri": ["07:00", "17:00"], "sat": ["07:00", "15:00"], "sun": null, "emergency24h": false },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-04-19" },
+      { "type": "proof_of_address", "checked_on": "2026-04-19" },
+      { "type": "liability_cover", "checked_on": "2026-04-25" }
+    ]
+  },
+  {
+    "slug": "milnerton-move-it",
+    "name": "Milnerton Move It",
+    "category": "movers",
+    "suburbs_served": ["Milnerton", "Table View", "Blouberg", "Parklands", "Century City"],
+    "services": ["Household moves", "Office relocations", "Storage", "Furniture delivery"],
+    "description": "West coast side, two trucks and a storage unit in Montague Gardens if the dates don't line up between houses.",
+    "phone": "021 552 6614",
+    "whatsapp": "27839974412",
+    "status": "verified",
+    "rating_avg": 4.1,
+    "rating_count": 51,
+    "callout_from": 1450,
+    "hours": { "mon": ["07:30", "17:00"], "tue": ["07:30", "17:00"], "wed": ["07:30", "17:00"], "thu": ["07:30", "17:00"], "fri": ["07:30", "17:00"], "sat": ["08:00", "13:00"], "sun": null, "emergency24h": false },
+    "checks": [{ "type": "id_document", "checked_on": "2026-07-22" }, { "type": "proof_of_address", "checked_on": "2026-07-22" }]
+  },
+  {
+    "slug": "bakkie-en-trailer-goodwood",
+    "name": "Bakkie en Trailer",
+    "category": "movers",
+    "suburbs_served": ["Goodwood", "Parow", "Bellville", "Elsies River", "Maitland"],
+    "services": ["Single-item delivery", "Small moves", "Rubble removal", "Garden refuse"],
+    "description": "Exactly what the name says — a bakkie and a trailer, for the jobs a moving company won't quote on. Fridge across town, a load of rubble, one couch.",
+    "phone": "021 591 4408",
+    "whatsapp": "27728806651",
+    "status": "verified",
+    "rating_avg": 4.7,
+    "rating_count": 121,
+    "callout_from": 450,
+    "hours": { "mon": ["07:00", "18:00"], "tue": ["07:00", "18:00"], "wed": ["07:00", "18:00"], "thu": ["07:00", "18:00"], "fri": ["07:00", "18:00"], "sat": ["07:00", "16:00"], "sun": ["09:00", "13:00"], "emergency24h": false },
+    "checks": [{ "type": "id_document", "checked_on": "2026-02-28" }, { "type": "proof_of_address", "checked_on": "2026-02-28" }]
+  }
+]

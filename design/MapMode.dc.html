@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Karla:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin:0; background:#E9EBE7; color:#161C24;
+           font-family:Karla,'Helvetica Neue',Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+    .dsp { font-family:'Bricolage Grotesque',Karla,system-ui,sans-serif; letter-spacing:-0.022em; margin:0; }
+    a { color:#A8325A; text-decoration:none; } a:hover { color:#7E2242; }
+    svg { display:block; }
+    .m { color:#5A6472; }
+  </style>
+</helmet>
+
+<div style="width:390px; height:844px; background:#E9EBE7; position:relative; overflow:hidden;">
+
+  <!-- map canvas -->
+  <div style="position:absolute; inset:0;">
+    <svg width="390" height="844" viewBox="0 0 390 844" fill="none">
+      <rect width="390" height="844" fill="#E9EBE7"/>
+      <!-- mountain / nature reserve -->
+      <path d="M-20 210 L60 150 L140 176 L196 132 L250 168 L250 372 L96 420 L-20 388 Z" fill="#DAE3D5"/>
+      <path d="M-20 210 L60 150 L140 176 L196 132 L250 168" stroke="#C3D0BC" stroke-width="1.4"/>
+      <!-- water -->
+      <path d="M390 636 L286 690 L214 760 L188 844 L390 844 Z" fill="#CEDFE5"/>
+      <path d="M390 636 L286 690 L214 760 L188 844" stroke="#B7CDD5" stroke-width="1.6"/>
+      <!-- blocks -->
+      <rect x="264" y="196" width="66" height="54" rx="4" fill="#E1E3DE"/>
+      <rect x="272" y="288" width="88" height="70" rx="4" fill="#E1E3DE"/>
+      <rect x="106" y="470" width="94" height="62" rx="4" fill="#E1E3DE"/>
+      <rect x="228" y="454" width="70" height="48" rx="4" fill="#E1E3DE"/>
+      <rect x="40" y="596" width="104" height="76" rx="4" fill="#E1E3DE"/>
+      <rect x="176" y="616" width="82" height="58" rx="4" fill="#E1E3DE"/>
+      <!-- arterial roads -->
+      <path d="M-10 430 C 90 400, 200 420, 400 352" stroke="#FFFFFF" stroke-width="9" stroke-linecap="round"/>
+      <path d="M258 -10 C 250 200, 226 420, 190 844" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/>
+      <path d="M-10 574 C 120 560, 230 596, 400 548" stroke="#FFFFFF" stroke-width="6.5" stroke-linecap="round"/>
+      <!-- minor streets -->
+      <path d="M96 434 L86 844" stroke="#FFFFFF" stroke-width="3.4"/>
+      <path d="M330 356 L318 844" stroke="#FFFFFF" stroke-width="3.4"/>
+      <path d="M-10 706 L260 682" stroke="#FFFFFF" stroke-width="3.4"/>
+      <path d="M154 424 L166 844" stroke="#FFFFFF" stroke-width="2.6"/>
+      <path d="M-10 498 L286 470" stroke="#FFFFFF" stroke-width="2.6"/>
+      <!-- suburb labels -->
+      <text x="120" y="290" fill="#8E968A" font-family="Karla, sans-serif" font-size="11" letter-spacing="1.4">CONSTANTIA</text>
+      <text x="286" y="268" fill="#9AA0A6" font-family="Karla, sans-serif" font-size="11" letter-spacing="1.4">WYNBERG</text>
+      <text x="52" y="566" fill="#9AA0A6" font-family="Karla, sans-serif" font-size="11" letter-spacing="1.4">PLUMSTEAD</text>
+      <text x="216" y="580" fill="#9AA0A6" font-family="Karla, sans-serif" font-size="11" letter-spacing="1.4">DIEP RIVER</text>
+      <text x="248" y="742" fill="#9AA0A6" font-family="Karla, sans-serif" font-size="11" letter-spacing="1.4">RETREAT</text>
+    </svg>
+  </div>
+
+  <!-- your location -->
+  <div style="position:absolute; left:150px; top:528px;">
+    <span style="display:block; width:16px; height:16px; border-radius:999px; background:#2D6BE4; border:3px solid #FFFFFF; box-shadow:0 0 0 7px rgba(45,107,228,0.18);"></span>
+  </div>
+
+  <!-- pins -->
+  <div style="position:absolute; left:214px; top:298px; display:flex; align-items:center; gap:5px; background:#FFFFFF; border-radius:999px; padding:6px 10px 6px 7px; box-shadow:0 3px 10px rgba(22,28,36,0.22);">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+    <span style="font-size:12.5px; font-weight:700;">4.6</span>
+  </div>
+
+  <div style="position:absolute; left:60px; top:452px; display:flex; align-items:center; gap:5px; background:#FFFFFF; border-radius:999px; padding:6px 10px 6px 7px; box-shadow:0 3px 10px rgba(22,28,36,0.22);">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+    <span style="font-size:12.5px; font-weight:700;">4.2</span>
+  </div>
+
+  <div style="position:absolute; left:284px; top:486px; display:flex; align-items:center; gap:5px; background:#FFFFFF; border-radius:999px; padding:6px 10px 6px 7px; box-shadow:0 3px 10px rgba(22,28,36,0.22);">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+    <span style="font-size:12.5px; font-weight:700;">4.4</span>
+  </div>
+
+  <!-- selected pin -->
+  <div style="position:absolute; left:174px; top:396px;">
+    <div style="display:flex; align-items:center; gap:6px; background:#A8325A; border-radius:999px; padding:8px 13px 8px 10px; box-shadow:0 6px 16px rgba(168,50,90,0.42);">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.6v5.2c0 4.4-3 8.1-7 9.2-4-1.1-7-4.8-7-9.2V5.6z"/><path d="M9 12.1l2.2 2.2 4-4.3"/></svg>
+      <span style="font-size:13px; font-weight:700; color:#FFFFFF;">4.8</span>
+    </div>
+    <div style="width:0; height:0; margin:0 auto; border-left:6px solid transparent; border-right:6px solid transparent; border-top:7px solid #A8325A;"></div>
+  </div>
+
+  <!-- top controls -->
+  <div style="position:absolute; left:0; right:0; top:0; padding:14px;">
+    <div style="display:flex; align-items:center; gap:10px; background:#FFFFFF; border-radius:14px; padding:11px 13px; box-shadow:0 4px 14px rgba(22,28,36,0.14);">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="M14.5 5L7.5 12l7 7"/></svg>
+      <div style="flex:1; min-width:0;">
+        <div class="dsp" style="font-size:14.5px; font-weight:700; line-height:1.2;">Plumbers · open now</div>
+        <div class="m" style="font-size:12px; margin-top:1px;">7 within 5 km of you</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:5px; background:#F2F3F5; border-radius:9px; padding:7px 10px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="2" stroke-linecap="round"><path d="M4 6.5h16"/><path d="M4 12h16"/><path d="M4 17.5h16"/></svg>
+        <span style="font-size:12.5px; font-weight:700;">List</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- recentre -->
+  <div style="position:absolute; right:14px; top:322px; width:44px; height:44px; border-radius:13px; background:#FFFFFF; box-shadow:0 3px 12px rgba(22,28,36,0.18); display:flex; align-items:center; justify-content:center;">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2.6v3.2"/><path d="M12 18.2v3.2"/><path d="M21.4 12h-3.2"/><path d="M5.8 12H2.6"/></svg>
+  </div>
+
+  <!-- peek card -->
+  <div style="position:absolute; left:0; right:0; bottom:0; background:#FFFFFF; border-radius:20px 20px 0 0; box-shadow:0 -6px 26px rgba(22,28,36,0.16); padding:10px 16px 22px;">
+    <div style="width:38px; height:4px; border-radius:999px; background:#D6DBE2; margin:0 auto 14px;"></div>
+    <div style="display:flex; gap:12px;">
+      <div style="width:54px; height:54px; border-radius:13px; background:#FBEEF3; display:flex; align-items:center; justify-content:center; flex:0 0 auto;">
+        <span class="dsp" style="font-size:18px; font-weight:800; color:#A8325A;">KP</span>
+      </div>
+      <div style="flex:1; min-width:0;">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span class="dsp" style="font-size:16.5px; font-weight:700; line-height:1.2;">Kritzinger Plumbing</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F6B4F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="M12 3l7 2.6v5.2c0 4.4-3 8.1-7 9.2-4-1.1-7-4.8-7-9.2V5.6z"/><path d="M9 12.1l2.2 2.2 4-4.3"/></svg>
+        </div>
+        <div style="display:flex; align-items:center; gap:5px; margin-top:4px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+          <span style="font-size:13.5px; font-weight:700;">4.8</span>
+          <span class="m" style="font-size:13px;">· 213 · Diep River · 2,4 km</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px; margin-top:12px;">
+      <span style="width:6px; height:6px; border-radius:999px; background:#1FA45E; display:block;"></span>
+      <span style="font-size:12.5px; font-weight:600; color:#0F6B4F;">Open · 24 hr callout · from R450</span>
+    </div>
+    <div style="display:flex; gap:8px; margin-top:13px;">
+      <button style="flex:1; height:48px; border:0; border-radius:12px; background:#25D366; color:#161C24; font-size:14.5px; font-weight:700; font-family:Karla,sans-serif; display:flex; align-items:center; justify-content:center; gap:7px; cursor:pointer;">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.8a8.4 8.4 0 0 1-12.2 7.5L4 20.5l1.3-4.1A8.4 8.4 0 1 1 20.5 11.8z"/><path d="M9 9.6h1.6l1 2-1.1.9a6 6 0 0 0 2.9 2.9l.9-1.1 2 1v1.6a1.1 1.1 0 0 1-1.2 1.1 8.7 8.7 0 0 1-7.2-7.2A1.1 1.1 0 0 1 9 9.6z"/></svg>
+        WhatsApp
+      </button>
+      <button style="flex:1; height:48px; border:1px solid #D6DBE2; border-radius:12px; background:#FFFFFF; color:#161C24; font-size:14.5px; font-weight:700; font-family:Karla,sans-serif; display:flex; align-items:center; justify-content:center; gap:7px; cursor:pointer;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.8h3l1.4 3.5-2 1.4a12 12 0 0 0 5.9 5.9l1.4-2 3.5 1.4v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 5 6a2 2 0 0 1 2-2.2z"/></svg>
+        Call
+      </button>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>

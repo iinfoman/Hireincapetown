@@ -1,0 +1,256 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Karla:wght@400;500;600;700&display=swap">
+  <style>
+    body { margin:0; background:#F2F3F5; color:#161C24;
+           font-family:Karla,'Helvetica Neue',Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+    .dsp { font-family:'Bricolage Grotesque',Karla,system-ui,sans-serif; letter-spacing:-0.022em; margin:0; }
+    a { color:#A8325A; text-decoration:none; } a:hover { color:#7E2242; }
+    svg { display:block; }
+    .m { color:#5A6472; font-size:13px; line-height:1.45; }
+  </style>
+</helmet>
+
+<div style="width:390px; min-height:1568px; background:#F2F3F5; position:relative; overflow:hidden;">
+
+  <!-- top bar -->
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 18px; background:#161C24;">
+    <div style="display:flex; align-items:center; gap:9px;">
+      <div style="width:26px; height:26px; border-radius:8px; background:#A8325A; display:flex; align-items:center; justify-content:center;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+      </div>
+      <div class="dsp" style="font-size:16.5px; font-weight:800; color:#FFFFFF;">HireInCapeTown</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:14px;">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#C6CDD6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9.1A4 4 0 0 1 12 8a4 4 0 0 1 7 2.9C19 15.7 12 20 12 20z"/></svg>
+      <div style="width:28px; height:28px; border-radius:999px; background:#2C3542; display:flex; align-items:center; justify-content:center;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#C6CDD6" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 19.5c1.4-3.2 4-4.7 7-4.7s5.6 1.5 7 4.7"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- hero -->
+  <div style="position:relative; background:#161C24; padding:22px 18px 84px;">
+    <div style="position:absolute; left:0; right:0; bottom:0; height:130px; opacity:0.9;">
+      <svg width="390" height="130" viewBox="0 0 390 130" fill="none" preserveAspectRatio="none">
+        <path d="M0 130 L0 104 L30 100 L56 66 L73 55 L90 68 L112 92 L132 80 L152 46 L276 46 L302 78 L324 57 L342 72 L366 94 L390 98 L390 130 Z" fill="#FFFFFF" fill-opacity="0.045"/>
+        <path d="M0 104 L30 100 L56 66 L73 55 L90 68 L112 92 L132 80 L152 46 L276 46 L302 78 L324 57 L342 72 L366 94 L390 98" stroke="#A8325A" stroke-opacity="0.5" stroke-width="1.2"/>
+      </svg>
+    </div>
+    <div style="position:relative;">
+      <h1 class="dsp" style="font-size:31px; line-height:1.1; font-weight:800; color:#FFFFFF; max-width:300px; text-wrap:pretty;">Need someone you can trust?</h1>
+      <p style="margin:11px 0 0; font-size:14.5px; line-height:1.5; color:#A3AEBB; max-width:290px;">Real Cape Town businesses — checked, rated by people who actually hired them, and one tap from your WhatsApp.</p>
+    </div>
+  </div>
+
+  <!-- the need-bar (signature element) -->
+  <div style="margin:-66px 14px 0; position:relative; background:#FFFFFF; border-radius:18px; box-shadow:0 10px 28px rgba(22,28,36,0.14); padding:6px 6px 14px;">
+    <div style="display:flex; align-items:center; gap:11px; padding:15px 13px 14px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A8325A" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#8B94A1;">What do you need?</div>
+        <div class="dsp" style="font-size:17px; font-weight:600; color:#161C24; margin-top:2px;">Plumber — burst pipe</div>
+      </div>
+    </div>
+    <div style="height:1px; background:#E4E7EC; margin:0 13px;"></div>
+    <div style="display:flex; align-items:center; gap:11px; padding:14px 13px 15px;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#A8325A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+      <div>
+        <div style="font-size:11px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:#8B94A1;">Where</div>
+        <div class="dsp" style="font-size:17px; font-weight:600; color:#161C24; margin-top:2px;">Plumstead, Southern Suburbs</div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:2px 13px 14px;">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="width:7px; height:7px; border-radius:999px; background:#1FA45E; display:block;"></span>
+        <span style="font-size:14px; font-weight:600; color:#161C24;">Only show who's open now</span>
+      </div>
+      <div style="width:42px; height:25px; border-radius:999px; background:#0F6B4F; position:relative;">
+        <span style="position:absolute; top:3px; right:3px; width:19px; height:19px; border-radius:999px; background:#FFFFFF; display:block;"></span>
+      </div>
+    </div>
+    <button style="width:100%; height:52px; border:0; border-radius:13px; background:#A8325A; color:#FFFFFF; font-family:'Bricolage Grotesque',Karla,sans-serif; font-size:16.5px; font-weight:700; letter-spacing:-0.01em; cursor:pointer;">Find a business</button>
+  </div>
+
+  <!-- trust strip -->
+  <div style="display:flex; flex-wrap:wrap; gap:7px; padding:16px 16px 4px;">
+    <div style="display:flex; align-items:center; gap:6px; background:#E7F2EC; border-radius:999px; padding:7px 11px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F6B4F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.6v5.2c0 4.4-3 8.1-7 9.2-4-1.1-7-4.8-7-9.2V5.6z"/><path d="M9 12.1l2.2 2.2 4-4.3"/></svg>
+      <span style="font-size:12.5px; font-weight:600; color:#0F6B4F;">ID &amp; licence checked</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px; background:#FFFFFF; border:1px solid #E4E7EC; border-radius:999px; padding:7px 11px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+      <span style="font-size:12.5px; font-weight:600; color:#161C24;">Reviews only from real hires</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px; background:#FFFFFF; border:1px solid #E4E7EC; border-radius:999px; padding:7px 11px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.8a8.4 8.4 0 0 1-12.2 7.5L4 20.5l1.3-4.1A8.4 8.4 0 1 1 20.5 11.8z"/><path d="M9 9.6h1.6l1 2-1.1.9a6 6 0 0 0 2.9 2.9l.9-1.1 2 1v1.6a1.1 1.1 0 0 1-1.2 1.1 8.7 8.7 0 0 1-7.2-7.2A1.1 1.1 0 0 1 9 9.6z"/></svg>
+      <span style="font-size:12.5px; font-weight:600; color:#161C24;">Straight to WhatsApp</span>
+    </div>
+  </div>
+
+  <!-- categories -->
+  <div style="padding:22px 16px 4px;">
+    <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px;">
+      <h2 class="dsp" style="font-size:20px; font-weight:700;">What do you need today?</h2>
+      <span style="font-size:13px; font-weight:600; color:#A8325A;">All 34</span>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:9px;">
+
+      <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:14px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:7px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3.5a4.5 4.5 0 0 0-5.9 5.9L3.8 14.2a2 2 0 0 0 0 2.8l3.2 3.2a2 2 0 0 0 2.8 0l4.8-4.8a4.5 4.5 0 0 0 5.9-5.9l-2.9 2.9-2.6-.6-.6-2.6z"/></svg>
+        <span style="font-size:11.5px; font-weight:600; text-align:center; line-height:1.25;">Plumbers</span>
+      </div>
+
+      <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:14px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:7px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.8l-3.4 3.4 2.3 2.3L15.3 5z"/><path d="M9.6 6.2L4.4 11.4a2 2 0 0 0 0 2.8l3.3 3.3L14 11.2"/><path d="M18 14.5c0 1.2-.9 2.1-2 2.1s-2-.9-2-2.1 2-3.7 2-3.7 2 2.5 2 3.7z"/><path d="M6 21h9"/></svg>
+        <span style="font-size:11.5px; font-weight:600; text-align:center; line-height:1.25;">Cleaning</span>
+      </div>
+
+      <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:14px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:7px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M13.3 2.5L5 13.4h5.5l-.8 8.1L18 10.6h-5.5z"/></svg>
+        <span style="font-size:11.5px; font-weight:600; text-align:center; line-height:1.25;">Electricians</span>
+      </div>
+
+      <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:14px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:7px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5h10v8.8h-10z"/><path d="M12.5 10.5h4.2l3.3 3.2v2.6h-7.5z"/><circle cx="6.5" cy="18" r="1.9"/><circle cx="16.5" cy="18" r="1.9"/></svg>
+        <span style="font-size:11.5px; font-weight:600; text-align:center; line-height:1.25;">Movers</span>
+      </div>
+
+      <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:14px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:7px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="17.5" r="3"/><circle cx="18" cy="17.5" r="3"/><path d="M8.2 15.4L18.5 4.2"/><path d="M15.8 15.4L5.5 4.2"/></svg>
+        <span style="font-size:11.5px; font-weight:600; text-align:center; line-height:1.25;">Beauty</span>
+      </div>
+
+      <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:14px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:7px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.8L12 4l8.5 6.8"/><path d="M5.8 12.4V20h12.4v-7.6"/><path d="M10 20v-4.6h4V20"/></svg>
+        <span style="font-size:11.5px; font-weight:600; text-align:center; line-height:1.25;">Home repairs</span>
+      </div>
+
+      <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:14px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:7px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 14.2l1.5-4.9A2.4 2.4 0 0 1 7 7.6h10a2.4 2.4 0 0 1 2.3 1.7l1.5 4.9"/><path d="M3.2 14.2h17.6v3.6H3.2z"/><path d="M6.2 17.8v1.9"/><path d="M17.8 17.8v1.9"/></svg>
+        <span style="font-size:11.5px; font-weight:600; text-align:center; line-height:1.25;">Auto</span>
+      </div>
+
+      <div style="background:#FFFFFF; border:1px solid #E4E7EC; border-radius:14px; padding:12px 6px 10px; display:flex; flex-direction:column; align-items:center; gap:7px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.4h3.6l1.5-2.3h7.4l1.5 2.3h3.6v11H3.2z"/><circle cx="12" cy="13.4" r="3.4"/></svg>
+        <span style="font-size:11.5px; font-weight:600; text-align:center; line-height:1.25;">Photography</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- open now rail -->
+  <div style="padding:24px 0 4px;">
+    <div style="display:flex; align-items:center; gap:8px; padding:0 16px 4px;">
+      <span style="width:8px; height:8px; border-radius:999px; background:#1FA45E; display:block; box-shadow:0 0 0 4px rgba(31,164,94,0.16);"></span>
+      <h2 class="dsp" style="font-size:20px; font-weight:700;">Open right now</h2>
+    </div>
+    <p class="m" style="margin:0 16px 13px; font-size:13px;">7 plumbers taking calls near Plumstead · 21:14 on a Tuesday</p>
+
+    <div style="display:flex; gap:11px; padding:0 16px; overflow:hidden;">
+
+      <div style="flex:0 0 244px; background:#FFFFFF; border:1px solid #E4E7EC; border-radius:16px; padding:13px;">
+        <div style="display:flex; align-items:flex-start; gap:10px;">
+          <div style="width:42px; height:42px; border-radius:11px; background:#FBEEF3; display:flex; align-items:center; justify-content:center; flex:0 0 auto;">
+            <span class="dsp" style="font-size:15px; font-weight:800; color:#A8325A;">KP</span>
+          </div>
+          <div style="min-width:0;">
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span class="dsp" style="font-size:14.5px; font-weight:700; line-height:1.2;">Kritzinger Plumbing</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0F6B4F" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto;"><path d="M12 3l7 2.6v5.2c0 4.4-3 8.1-7 9.2-4-1.1-7-4.8-7-9.2V5.6z"/><path d="M9 12.1l2.2 2.2 4-4.3"/></svg>
+            </div>
+            <div style="display:flex; align-items:center; gap:4px; margin-top:3px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+              <span style="font-size:12.5px; font-weight:700;">4.8</span>
+              <span class="m" style="font-size:12.5px;">· 213 · Diep River</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px; margin:11px 0 11px;">
+          <span style="width:6px; height:6px; border-radius:999px; background:#1FA45E; display:block;"></span>
+          <span style="font-size:12.5px; font-weight:600; color:#0F6B4F;">Open · 24 hr callout</span>
+        </div>
+        <div style="display:flex; gap:7px;">
+          <button style="flex:1; height:44px; border:0; border-radius:11px; background:#25D366; color:#161C24; font-size:13.5px; font-weight:700; font-family:Karla,sans-serif; cursor:pointer;">WhatsApp</button>
+          <button style="width:44px; height:44px; border:1px solid #D6DBE2; border-radius:11px; background:#FFFFFF; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.8h3l1.4 3.5-2 1.4a12 12 0 0 0 5.9 5.9l1.4-2 3.5 1.4v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 5 6a2 2 0 0 1 2-2.2z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div style="flex:0 0 244px; background:#FFFFFF; border:1px solid #E4E7EC; border-radius:16px; padding:13px;">
+        <div style="display:flex; align-items:flex-start; gap:10px;">
+          <div style="width:42px; height:42px; border-radius:11px; background:#E7F2EC; display:flex; align-items:center; justify-content:center; flex:0 0 auto;">
+            <span class="dsp" style="font-size:15px; font-weight:800; color:#0F6B4F;">MD</span>
+          </div>
+          <div style="min-width:0;">
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span class="dsp" style="font-size:14.5px; font-weight:700; line-height:1.2;">Mo's Drain Doctor</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:4px; margin-top:3px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="#E8A317"><path d="M12 3.6l2.5 5.3 5.6.8-4.1 4 1 5.7-5-2.7-5 2.7 1-5.7-4.1-4 5.6-.8z"/></svg>
+              <span style="font-size:12.5px; font-weight:700;">4.4</span>
+              <span class="m" style="font-size:12.5px;">· 26 · Retreat</span>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px; margin:11px 0 11px;">
+          <span style="width:6px; height:6px; border-radius:999px; background:#1FA45E; display:block;"></span>
+          <span style="font-size:12.5px; font-weight:600; color:#0F6B4F;">Open · closes 23:00</span>
+        </div>
+        <div style="display:flex; gap:7px;">
+          <button style="flex:1; height:44px; border:0; border-radius:11px; background:#25D366; color:#161C24; font-size:13.5px; font-weight:700; font-family:Karla,sans-serif; cursor:pointer;">WhatsApp</button>
+          <button style="width:44px; height:44px; border:1px solid #D6DBE2; border-radius:11px; background:#FFFFFF; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#161C24" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.8h3l1.4 3.5-2 1.4a12 12 0 0 0 5.9 5.9l1.4-2 3.5 1.4v3a2 2 0 0 1-2.2 2A16.5 16.5 0 0 1 5 6a2 2 0 0 1 2-2.2z"/></svg>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- one clear secondary path -->
+  <div style="margin:26px 16px 0; background:#161C24; border-radius:18px; padding:22px 20px;">
+    <h2 class="dsp" style="font-size:21px; font-weight:700; color:#FFFFFF; line-height:1.2; text-wrap:pretty;">Cape Town businesses deserve to be found.</h2>
+    <p style="margin:10px 0 16px; font-size:14px; line-height:1.55; color:#A3AEBB;">One person with a bakkie in Khayelitsha, or twelve staff in Constantia — same listing, same free start.</p>
+    <button style="width:100%; height:50px; border:0; border-radius:13px; background:#FFFFFF; color:#161C24; font-family:'Bricolage Grotesque',Karla,sans-serif; font-size:16px; font-weight:700; cursor:pointer;">List your business — free</button>
+  </div>
+
+  <!-- bottom nav -->
+  <div style="position:absolute; left:0; right:0; bottom:0; display:grid; grid-template-columns:repeat(5, minmax(0, 1fr)); background:#FFFFFF; border-top:1px solid #E4E7EC; padding:9px 0 15px;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A8325A" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 10.8L12 4l8.5 6.8"/><path d="M5.8 12.4V20h12.4v-7.6"/></svg>
+      <span style="font-size:10.5px; font-weight:700; color:#A8325A;">Home</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B94A1" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <span style="font-size:10.5px; font-weight:600; color:#8B94A1;">Search</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B94A1" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.2L3.5 6.5v13.3L9 17.5l6 2.3 5.5-2.3V4.2L15 6.5z"/><path d="M9 4.2v13.3"/><path d="M15 6.5v13.3"/></svg>
+      <span style="font-size:10.5px; font-weight:600; color:#8B94A1;">Map</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B94A1" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.3-7-9.1A4 4 0 0 1 12 8a4 4 0 0 1 7 2.9C19 15.7 12 20 12 20z"/></svg>
+      <span style="font-size:10.5px; font-weight:600; color:#8B94A1;">Saved</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8B94A1" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="8.5" r="3.6"/><path d="M5 19.5c1.4-3.2 4-4.7 7-4.7s5.6 1.5 7 4.7"/></svg>
+      <span style="font-size:10.5px; font-weight:600; color:#8B94A1;">Account</span>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":1568}}'>
+class Component extends DCLogic {}
+</script>
+</body>
+</html>
