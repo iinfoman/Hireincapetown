@@ -28,26 +28,49 @@ export async function loadBusinesses() {
   if (cache) return cache;
 
   if (process.env.DATABASE_URL) {
-    const { default: pg } = await import('pg');
-    const client = new pg.Client({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-    });
-    await client.connect();
     try {
-      const { rows } = await client.query(SELECT);
-      cache = rows;
-    } finally {
-      await client.end();
+      const { default: pg } = await import('pg');
+      const client = new pg.Client({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false },
+        // A paused Supabase project takes a while to answer, or never does.
+        // Fail fast rather than hanging the build for minutes.
+        connectionTimeoutMillis: 20000,
+      });
+      await client.connect();
+      try {
+        const { rows } = await client.query(SELECT);
+        cache = rows;
+      } finally {
+        await client.end();
+      }
+      console.log(`  data: ${cache.length} verified businesses from Supabase (hireincapetown schema)`);
+      return cache;
+    } catch (err) {
+      // The free Supabase tier pauses a project after about a week of no use.
+      // Without this, a sleeping database would fail the build and block every
+      // deploy — including ones that have nothing to do with the data. Falling
+      // back keeps the site shippable; the shouting keeps it from going
+      // unnoticed, because the published listings are then whatever seed.json
+      // last held.
+      console.warn('\n  ' + '!'.repeat(64));
+      console.warn('  ! DATABASE_URL is set but the database could not be read.');
+      console.warn(`  ! ${err.message}`);
+      console.warn('  ! Most likely the Supabase project is paused — wake it at');
+      console.warn('  ! supabase.com/dashboard, then redeploy to pick up live data.');
+      console.warn('  ! Building from db/seed.json instead, so this deploy still ships.');
+      console.warn('  ' + '!'.repeat(64) + '\n');
     }
-    console.log(`  data: ${cache.length} verified businesses from Supabase (hireincapetown schema)`);
-  } else {
+  }
+
+  {
     const raw = JSON.parse(await readFile(new URL('../../db/seed.json', import.meta.url), 'utf8'));
     // The public site only ever shows verified listings — mirror that here so
     // the fallback can't accidentally be more permissive than the query.
     cache = raw.filter((b) => b.status === 'verified')
                .sort((a, b) => (b.rating_avg - a.rating_avg) || (b.rating_count - a.rating_count));
-    console.log(`  data: ${cache.length} verified businesses from db/seed.json (no DATABASE_URL)`);
+    const why = process.env.DATABASE_URL ? 'database unreachable — see the warning above' : 'no DATABASE_URL';
+    console.log(`  data: ${cache.length} verified businesses from db/seed.json (${why})`);
   }
   return cache;
 }
