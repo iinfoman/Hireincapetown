@@ -38,17 +38,33 @@ Site configuration → Build & deploy → Continuous deployment → Link reposit
 `iinfoman/Hireincapetown`. Build settings come from `netlify.toml`.
 No environment variables needed — the build falls back to `db/seed.json`.
 
-**3. Point the domain.** In Netlify, Domain management → Add `hireincapetown.co.za`
-(this issues the certificate). Then at IONOS → DNS:
+**3. Point the domain.** Half done.
 
-| Type | Host | Change to |
-|---|---|---|
-| A | `@` | `75.2.60.5` |
-| CNAME | `www` | `hireincapetown.netlify.app` |
+*Done in Netlify:* `hireincapetown.co.za` is added as the **primary** domain and
+`www.hireincapetown.co.za` redirects to it. Both sit at "Pending DNS
+verification" until the records below change — that is expected, not a fault.
 
-Delete the existing `www` A record first — IONOS won't allow an A and CNAME on
-the same host. Leave MX records alone if any email uses this domain. Verify the
-IP against what Netlify shows; theirs is authoritative.
+*Still to do, at IONOS → Domains & SSL → hireincapetown.co.za → DNS:*
+
+| Type | Host | Currently | Change to |
+|---|---|---|---|
+| A | `@` | 74.208.236.12 (IONOS) | `75.2.60.5` |
+| CNAME | `www` | an A record to 74.208.236.12 | `hireincapetown.netlify.app` |
+
+For `www`, delete the A record first — IONOS won't allow an A and a CNAME on the
+same host. Drop the TTL to 1 hour before starting so a mistake costs an hour.
+
+**Leave the MX records alone.** The domain carries email (2 MX records were
+present when this was written); removing them breaks it, and changing A records
+does not affect mail.
+
+Do not use Netlify DNS for this domain. It moves the nameservers off IONOS and
+the MX records do not follow automatically.
+
+Do not point the A record at whatever `hireincapetown.netlify.app` resolves to —
+that is a rotating CDN edge address. `75.2.60.5` is the stable apex target.
+Cross-check against the IP shown under "Pending DNS verification" in Netlify;
+that is authoritative.
 
 **4. Use the live database** (optional, later). Add `DATABASE_URL` as a Netlify
 environment variable. Until then the site builds from the committed fixture,
