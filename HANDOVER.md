@@ -11,7 +11,7 @@ developer, or with any tool. **Nothing below depends on a Claude subscription.**
 | Database + 14 seeded businesses | Supabase project `alogcohoopgzerrxheiw` | free tier |
 | Netlify site (created, not yet deployed) | site id `5bc3cd1e-a3f0-41ef-877a-bd2a2e9cfefd` | free tier |
 | Design canvas | https://claude.ai/code/artifact/06567147-3f01-495f-bcbc-3b1640744ac4 | free |
-| Domain | hireincapetown.co.za at IONOS | **paid — see below** |
+| Domain | hireincapetown.co.za → Netlify, registered at IONOS | **paid — see below** |
 
 **The only thing that can actually be lost is the domain.** If the IONOS
 registration lapses it can be bought by someone else and is gone for good.
@@ -38,17 +38,28 @@ Site configuration → Build & deploy → Continuous deployment → Link reposit
 `iinfoman/Hireincapetown`. Build settings come from `netlify.toml`.
 No environment variables needed — the build falls back to `db/seed.json`.
 
-**3. Point the domain.** In Netlify, Domain management → Add `hireincapetown.co.za`
-(this issues the certificate). Then at IONOS → DNS:
+**3. Point the domain.** ✅ Done, 17 Sep 2026.
 
-| Type | Host | Change to |
-|---|---|---|
-| A | `@` | `75.2.60.5` |
-| CNAME | `www` | `hireincapetown.netlify.app` |
+`hireincapetown.co.za` is the primary domain on the Netlify project, with
+`www` redirecting to it. Both A records now point at Netlify's load balancer
+(`75.2.60.5`), verified through Cloudflare and Google resolvers. The MX records
+(`mx00`/`mx01.ionos.com`) were left untouched, so email still works.
 
-Delete the existing `www` A record first — IONOS won't allow an A and CNAME on
-the same host. Leave MX records alone if any email uses this domain. Verify the
-IP against what Netlify shows; theirs is authoritative.
+Notes for anyone changing this later:
+
+- The A records were tagged SERVICE: Webhosting in IONOS, meaning an IONOS
+  hosting package was attached to the domain. Editing the record value
+  disconnects it. **That package may still be billing** — worth checking, but
+  confirm the email is not bundled with it before cancelling anything.
+- `www` is an A record rather than a CNAME. A CNAME to
+  `hireincapetown.netlify.app` is marginally more correct and survives Netlify
+  changing its load balancer IP; the A record was chosen because editing one
+  value on a phone is safer than deleting a service-managed record and
+  recreating it. Switch it when convenient.
+- Never point the A record at whatever `hireincapetown.netlify.app` resolves to.
+  That is a rotating CDN edge address. `75.2.60.5` is the stable apex target.
+- Do not move this domain to Netlify DNS. It carries email, and the MX records
+  do not follow the nameservers automatically.
 
 **4. Use the live database** (optional, later). Add `DATABASE_URL` as a Netlify
 environment variable. Until then the site builds from the committed fixture,
