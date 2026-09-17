@@ -203,14 +203,23 @@ await writeFile(`${OUT}/sitemap.xml`,
 await writeFile(`${OUT}/robots.txt`, `User-agent: *\nAllow: /\nDisallow: /find\n\nSitemap: ${SITE}/sitemap.xml\n`);
 
 // --- budget -----------------------------------------------------------------
-const { readFileSync } = await import('node:fs');
+const { readFileSync, existsSync } = await import('node:fs');
 const assets = [js, ...css].reduce((n, f) => n + gzipSync(readFileSync(OUT + f)).length, 0);
+
+// The hero photograph counts. It is already compressed, so it does not gzip
+// further — but it is real bytes over a real prepaid bundle, and a budget that
+// quietly ignores the largest thing on the page is not a budget. Measured at
+// the variant a phone actually fetches, which is the smallest one.
+const HERO = `${OUT}/hero/tall-540.avif`;
+const heroBytes = existsSync(HERO) ? readFileSync(HERO).length : 0;
+
 const heaviest = pages.reduce((a, b) => (b.bytes > a.bytes ? b : a));
-const worstKb = (heaviest.bytes + assets) / 1024;
+const worstKb = (heaviest.bytes + assets + heroBytes) / 1024;
 
 console.log(`\n  ${pages.length} pages · sitemap · robots.txt`);
 console.log(`  assets (gzip): ${(assets / 1024).toFixed(1)} KB  [css + ${(gzipSync(readFileSync(OUT + js)).length / 1024).toFixed(1)} KB js]`);
-console.log(`  heaviest page: ${heaviest.route} → ${worstKb.toFixed(1)} KB gzip total`);
+if (heroBytes) console.log(`  hero photo:    ${(heroBytes / 1024).toFixed(1)} KB  [avif, phone variant]`);
+console.log(`  heaviest page: ${heaviest.route} → ${worstKb.toFixed(1)} KB total over the wire`);
 if (worstKb > BUDGET_KB) {
   console.error(`\n  ✗ over the ${BUDGET_KB} KB budget. Prepaid data is a real cost — fix this, don't raise the number.\n`);
   process.exit(1);

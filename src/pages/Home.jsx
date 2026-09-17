@@ -8,13 +8,13 @@ import { HeroArt } from '../components/HeroArt.jsx';
 
 export const Home = ({ suburbs, featured, seoLinks }) => (
   <Layout>
-    <section className="relative overflow-hidden bg-ink px-4 pb-40 pt-6 md:px-10 md:pb-44 md:pt-16">
+    <section className="relative isolate overflow-hidden bg-ink">
       <HeroArt />
-      <div className="relative mx-auto max-w-[1180px]">
-        <h1 className="max-w-[300px] text-pretty font-dsp text-[31px] font-extrabold leading-[1.08] text-white md:max-w-[680px] md:text-[56px]">
+      <div className="relative mx-auto flex min-h-[540px] max-w-[1180px] flex-col px-4 pb-40 pt-7 md:min-h-[620px] md:px-10 md:pb-44 md:pt-20">
+        <h1 className="max-w-[300px] text-pretty font-dsp text-[33px] font-extrabold leading-[1.06] text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)] md:max-w-[560px] md:text-[54px]">
           Need someone you can trust?
         </h1>
-        <p className="mt-3 max-w-[290px] text-[14.5px] leading-relaxed text-[#A3AEBB] md:mt-4 md:max-w-[540px] md:text-[18px]">
+        <p className="mt-3 max-w-[300px] text-[15px] font-medium leading-relaxed text-[#C9D2DC] drop-shadow-[0_1px_2px_rgba(0,0,0,0.5)] md:mt-4 md:max-w-[480px] md:text-[17.5px]">
           Real Cape Town businesses — checked, rated by people who actually hired them,
           and one tap from your WhatsApp.
         </p>
