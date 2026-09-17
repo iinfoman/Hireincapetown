@@ -3,19 +3,13 @@ import { NeedBar } from '../components/NeedBar.jsx';
 import { BusinessCard } from '../components/BusinessCard.jsx';
 import { Trade, Shield, Star, Chat } from '../components/Icons.jsx';
 import { CATEGORIES } from '../lib/categories.js';
+import { HeroArt } from '../components/HeroArt.jsx';
 
-const Ridge = () => (
-  <svg className="pointer-events-none absolute inset-x-0 bottom-0 h-[130px] w-full md:h-[220px]"
-       viewBox="0 0 390 130" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M0 130 L0 104 L30 100 L56 66 L73 55 L90 68 L112 92 L132 80 L152 46 L276 46 L302 78 L324 57 L342 72 L366 94 L390 98 L390 130 Z" fill="#fff" fillOpacity=".045" />
-    <path d="M0 104 L30 100 L56 66 L73 55 L90 68 L112 92 L132 80 L152 46 L276 46 L302 78 L324 57 L342 72 L366 94 L390 98" stroke="#A8325A" strokeOpacity=".5" strokeWidth="1.2" fill="none" />
-  </svg>
-);
 
 export const Home = ({ suburbs, featured, seoLinks }) => (
   <Layout>
-    <section className="relative overflow-hidden bg-ink px-4 pb-24 pt-6 md:px-10 md:pb-28 md:pt-16">
-      <Ridge />
+    <section className="relative overflow-hidden bg-ink px-4 pb-40 pt-6 md:px-10 md:pb-44 md:pt-16">
+      <HeroArt />
       <div className="relative mx-auto max-w-[1180px]">
         <h1 className="max-w-[300px] text-pretty font-dsp text-[31px] font-extrabold leading-[1.08] text-white md:max-w-[680px] md:text-[56px]">
           Need someone you can trust?
