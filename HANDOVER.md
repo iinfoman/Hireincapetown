@@ -67,10 +67,14 @@ which is a perfectly good public site.
 
 ## Then the real work
 
-Registration → admin approval queue → review submission → the quote-request
-fan-out. And replacing the 14 invented seed businesses with real vetted ones —
-see the cold-start section of `BRIEF.md`. The directory is useful to nobody
-until the listings are real.
+**Replacing the 14 invented listings with real vetted ones.** This needs no code
+and no tooling — see **[ADDING-BUSINESSES.md](ADDING-BUSINESSES.md)**, which
+explains how to add a business by editing one file on github.com in a browser.
+The site rebuilds itself. The directory is useful to nobody until the listings
+are real, and this is the part that does not require a developer.
+
+After that: registration → admin approval queue → review submission → the
+quote-request fan-out. See `BRIEF.md`.
 
 ## Things that will bite if forgotten
 

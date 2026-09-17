@@ -1,0 +1,125 @@
+# Adding a business — with nothing but a web browser
+
+No code editor, no terminal, no AI subscription, no developer. Everything below
+happens on github.com, and the site rebuilds itself within about a minute.
+
+This is how you get from 14 invented listings to the 20–30 real ones the
+project actually needs.
+
+---
+
+## The loop
+
+1. Go to **[db/seed.json](https://github.com/iinfoman/Hireincapetown/blob/main/db/seed.json)**
+2. Click the **pencil icon** (top right of the file)
+3. Add your business (copy the template below)
+4. Scroll down, click **Commit changes**
+5. Wait about a minute. The site updates itself.
+
+That's it. If you make a mistake the build fails, the old site stays up, and
+nothing breaks for visitors — GitHub emails you that it failed.
+
+## The template
+
+Copy this, paste it just after the opening `[` at the very top of the file, and
+fill it in. **Keep the comma after the closing `}`.**
+
+```json
+  {
+    "slug": "kritzinger-plumbing-diep-river",
+    "name": "Kritzinger Plumbing & Drains",
+    "category": "plumbers",
+    "suburbs_served": ["Diep River", "Plumstead", "Bergvliet"],
+    "services": ["Burst pipes", "Blocked drains", "Geyser replacement"],
+    "description": "Two vans, running out of Diep River since 2009. Burst pipes get priority over scheduled work.",
+    "phone": "021 712 4408",
+    "whatsapp": "27824319076",
+    "status": "verified",
+    "rating_avg": null,
+    "rating_count": 0,
+    "callout_from": 450,
+    "hours": {
+      "mon": ["07:30", "17:00"],
+      "tue": ["07:30", "17:00"],
+      "wed": ["07:30", "17:00"],
+      "thu": ["07:30", "17:00"],
+      "fri": ["07:30", "17:00"],
+      "sat": ["08:00", "13:00"],
+      "sun": null,
+      "emergency24h": true
+    },
+    "checks": [
+      { "type": "id_document", "checked_on": "2026-09-17" },
+      { "type": "proof_of_address", "checked_on": "2026-09-17" },
+      { "type": "trade_registration", "checked_on": "2026-09-17", "label": "PIRB plumber registration" }
+    ]
+  },
+```
+
+## Field by field
+
+| Field | What to put |
+|---|---|
+| `slug` | The web address. Lowercase, hyphens only, no spaces. Business name + suburb works well. **Must be unique.** |
+| `name` | Exactly as the business writes it. |
+| `category` | One of: `plumbers`, `electricians`, `cleaning`, `movers`, `beauty`, `home-repairs`, `auto`, `photography`. Must match exactly or the listing is skipped. |
+| `suburbs_served` | Real suburbs. Each one creates a page like "Plumbers in Plumstead" — this is how people find them on Google. **More suburbs, more pages.** |
+| `services` | What they actually do. The first four show on the listing card. |
+| `description` | Two or three honest sentences. Specific beats polished: *"Books a week out — not the people to call at midnight, and they say so."* |
+| `phone` | As dialled. Spaces are fine. |
+| `whatsapp` | **International format, no `+`, no spaces.** 082 431 9076 becomes `27824319076`. Get this wrong and the WhatsApp button goes nowhere. |
+| `status` | `verified` shows on the site. `pending` keeps it hidden until you've checked them. |
+| `rating_avg` | `null` until they have real reviews. Never invent one. |
+| `rating_count` | `0` to start. |
+| `callout_from` | Rands, digits only, e.g. `450`. Or `null` if they don't quote one. |
+| `hours` | `["07:30", "17:00"]` per day, or `null` if closed. `emergency24h: true` means they take after-hours calls. |
+| `checks` | One entry per document you actually saw. **Only list what you checked.** |
+
+## Rules worth keeping
+
+**Never invent a rating.** An empty rating shows "No reviews yet", which is
+honest and fine. A fabricated one is the exact thing this directory exists to
+be an alternative to.
+
+**Only list checks you actually did.** The verified badge is the entire product.
+One fake badge and the whole thing is just another directory.
+
+**`status: "pending"`** is your friend. Add a business as pending while you wait
+for their documents; it stays invisible until you switch it to `verified`.
+
+**Phone-format the WhatsApp number carefully.** It is the most common mistake
+and the most costly — a broken WhatsApp button is a lost customer.
+
+## If the build fails
+
+GitHub emails you. Almost always one of:
+
+- a **missing or extra comma** between businesses
+- a **duplicate `slug`**
+- a **category** that isn't in the list above
+
+Open the file again, fix it, commit again. The live site is untouched until a
+build succeeds, so a mistake costs you a minute and nothing else.
+
+## Checking your work
+
+After the build, the business appears at:
+
+```
+hireincapetown.co.za/business/<your-slug>
+```
+
+and on every `hireincapetown.co.za/<category>/<suburb>` page for the suburbs you
+listed.
+
+---
+
+## Later: the database
+
+`db/seed.json` is deliberately simple, and it is enough for the first few dozen
+listings. When businesses start registering themselves you will want the
+Supabase database instead — the schema is already applied and waiting. Setting
+`DATABASE_URL` in Netlify switches the build over to it. See `HANDOVER.md`.
+
+Until then, this file is your directory. Editing it in a browser is a perfectly
+respectable way to run one.
