@@ -68,8 +68,9 @@ which is a perfectly good public site.
 ## Then the real work
 
 **Replacing the 14 invented listings with real vetted ones.** This needs no code
-and no tooling — see **[ADDING-BUSINESSES.md](ADDING-BUSINESSES.md)**, which
-explains how to add a business by editing one file on github.com in a browser.
+and no tooling. There is a form at **`/tools/new-listing/`** on the live site
+that writes the entry for you; paste its output into `db/seed.json` on
+github.com and commit. See **[ADDING-BUSINESSES.md](ADDING-BUSINESSES.md)**.
 The site rebuilds itself. The directory is useful to nobody until the listings
 are real, and this is the part that does not require a developer.
 

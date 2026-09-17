@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en-ZA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Add a listing — HireInCapeTown</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#F2F3F5; color:#161C24; font:15px/1.5 Karla,"Helvetica Neue",Arial,sans-serif; }
+  header { background:#161C24; color:#fff; padding:18px 16px; }
+  header h1 { margin:0; font-size:19px; letter-spacing:-.02em; }
+  header p { margin:6px 0 0; font-size:13.5px; color:#A3AEBB; }
+  main { max-width:680px; margin:0 auto; padding:16px 16px 60px; }
+  fieldset { border:1px solid #E4E7EC; border-radius:14px; background:#fff; padding:16px; margin:0 0 14px; }
+  legend { font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:.06em; color:#8B94A1; padding:0 6px; }
+  label { display:block; margin:12px 0 0; font-weight:600; font-size:13.5px; }
+  .hint { font-weight:400; color:#5A6472; font-size:12.5px; display:block; margin-top:2px; }
+  input, select, textarea { width:100%; margin-top:6px; padding:11px 12px; border:1px solid #D6DBE2;
+    border-radius:11px; font:inherit; background:#fff; min-height:44px; }
+  textarea { min-height:78px; resize:vertical; }
+  input:focus, select:focus, textarea:focus { outline:2px solid #A8325A; outline-offset:1px; border-color:#A8325A; }
+  .row { display:flex; gap:10px; } .row > * { flex:1; }
+  .checks { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .checks label { display:flex; align-items:center; gap:7px; margin:0; background:#F2F3F5;
+    border-radius:999px; padding:9px 13px; font-size:13.5px; cursor:pointer; min-height:44px; }
+  .checks input { width:auto; min-height:0; margin:0; }
+  .warn { background:#FBEEF3; border-radius:11px; padding:11px 13px; font-size:13px; margin-top:10px; color:#7E2242; }
+  .ok { background:#E7F2EC; color:#0F6B4F; }
+  output { display:block; white-space:pre; overflow-x:auto; background:#161C24; color:#E4E7EC;
+    border-radius:14px; padding:15px; font:12.5px/1.55 ui-monospace,Menlo,Consolas,monospace; margin-top:12px; }
+  button { min-height:52px; width:100%; border:0; border-radius:13px; background:#A8325A; color:#fff;
+    font:700 16px/1 Karla,sans-serif; cursor:pointer; margin-top:12px; }
+  button.ghost { background:#fff; color:#161C24; border:1px solid #161C24; }
+  a { color:#A8325A; }
+  ol { padding-left:20px; } ol li { margin:7px 0; font-size:14px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Add a listing</h1>
+  <p>Fill this in, copy the result, paste it into db/seed.json on GitHub. No account or tools needed beyond your GitHub login.</p>
+</header>
+
+<main>
+<form id="f" autocomplete="off">
+  <fieldset>
+    <legend>The business</legend>
+    <label>Business name
+      <input name="name" placeholder="Kritzinger Plumbing &amp; Drains" required>
+    </label>
+    <label>Trade
+      <select name="category">
+        <option value="plumbers">Plumbers</option>
+        <option value="electricians">Electricians</option>
+        <option value="cleaning">Cleaning</option>
+        <option value="movers">Movers</option>
+        <option value="beauty">Beauty</option>
+        <option value="home-repairs">Home repairs</option>
+        <option value="auto">Auto</option>
+        <option value="photography">Photography</option>
+      </select>
+    </label>
+    <label>Suburbs they work in
+      <span class="hint">Separate with commas. Each one becomes its own page on Google — list every suburb they'll actually travel to.</span>
+      <input name="suburbs" placeholder="Diep River, Plumstead, Bergvliet, Retreat">
+    </label>
+    <label>Services
+      <span class="hint">Separate with commas. The first four show on the listing card.</span>
+      <input name="services" placeholder="Burst pipes, Blocked drains, Geyser replacement">
+    </label>
+    <label>Description
+      <span class="hint">Two or three honest sentences. Specific beats polished — "books a week out, not the people to call at midnight" tells a customer more than "professional service".</span>
+      <textarea name="description" placeholder="Runs out of Diep River since 2009. Three vans and an after-hours rota. Burst pipes get priority over scheduled work."></textarea>
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Contact</legend>
+    <label>Phone
+      <input name="phone" placeholder="021 712 4408">
+    </label>
+    <label>WhatsApp number
+      <span class="hint">Type it normally — 082 431 9076. It gets converted below. This is the field most worth checking twice.</span>
+      <input name="whatsapp" placeholder="082 431 9076">
+    </label>
+    <div id="wa-note"></div>
+    <label>Callout price in rands
+      <span class="hint">Digits only. Leave blank if they don't quote one.</span>
+      <input name="callout" inputmode="numeric" placeholder="450">
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Hours</legend>
+    <div class="row">
+      <label>Weekdays open <input name="wdOpen" value="08:00"></label>
+      <label>Weekdays close <input name="wdClose" value="17:00"></label>
+    </div>
+    <div class="row">
+      <label>Saturday open <span class="hint">blank = closed</span><input name="satOpen" value="08:00"></label>
+      <label>Saturday close <input name="satClose" value="13:00"></label>
+    </div>
+    <div class="row">
+      <label>Sunday open <span class="hint">blank = closed</span><input name="sunOpen"></label>
+      <label>Sunday close <input name="sunClose"></label>
+    </div>
+    <label class="checks" style="margin-top:14px;">
+      <input type="checkbox" name="emergency"> Takes emergency calls at any hour
+    </label>
+  </fieldset>
+
+  <fieldset>
+    <legend>What you checked</legend>
+    <span class="hint">Only tick what you actually saw. The verified badge is the whole product — one fake badge and this is just another directory.</span>
+    <div class="checks">
+      <label><input type="checkbox" name="chk" value="id_document" checked> ID document</label>
+      <label><input type="checkbox" name="chk" value="proof_of_address" checked> Proof of address</label>
+      <label><input type="checkbox" name="chk" value="trade_registration"> Trade registration</label>
+      <label><input type="checkbox" name="chk" value="liability_cover"> Liability cover</label>
+    </div>
+    <label>Trade registration name
+      <span class="hint">Only if ticked. e.g. "PIRB plumber registration"</span>
+      <input name="tradeLabel" placeholder="PIRB plumber registration">
+    </label>
+    <label>Date you checked
+      <input type="date" name="checkedOn">
+    </label>
+    <label>Show on the site now?
+      <select name="status">
+        <option value="verified">Yes — publish it (verified)</option>
+        <option value="pending">Not yet — keep it hidden (pending)</option>
+      </select>
+    </label>
+  </fieldset>
+</form>
+
+<h2 style="font-size:16px;margin:22px 0 0;">Copy this</h2>
+<output id="out">Fill in the business name to begin.</output>
+<button type="button" id="copy">Copy to clipboard</button>
+<a href="https://github.com/iinfoman/Hireincapetown/edit/main/db/seed.json" target="_blank" rel="noopener">
+  <button type="button" class="ghost">Open db/seed.json on GitHub</button>
+</a>
+
+<h2 style="font-size:16px;margin:26px 0 6px;">Then</h2>
+<ol>
+  <li>Click at the end of line 1 — the line with just <code>[</code> — and press Enter.</li>
+  <li>Paste.</li>
+  <li>Scroll down, click the green <strong>Commit changes</strong> button, then confirm.</li>
+  <li>Wait about a minute, then check <code>hireincapetown.co.za</code>.</li>
+</ol>
+<p style="font-size:13.5px;color:#5A6472;">
+  If it doesn't appear, GitHub emails you that the build failed — almost always a stray comma.
+  The live site is untouched until a build succeeds, so nothing breaks. Fix it and commit again.
+</p>
+</main>
+
+<script>
+const f = document.getElementById('f');
+const out = document.getElementById('out');
+const waNote = document.getElementById('wa-note');
+
+const slugify = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+  .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+
+// 082 431 9076 -> 27824319076. Getting this wrong is the single costliest
+// mistake on the form: the WhatsApp button silently goes nowhere.
+function waNumber(raw) {
+  let d = (raw||'').replace(/[^\d+]/g,'').replace(/^\+/,'');
+  if (!d) return null;
+  if (d.startsWith('27')) return d;
+  if (d.startsWith('0')) return '27' + d.slice(1);
+  return d;
+}
+
+const list = s => (s||'').split(',').map(x=>x.trim()).filter(Boolean);
+const q = s => JSON.stringify(s ?? null);
+
+function build() {
+  const d = Object.fromEntries(new FormData(f));
+  const checks = [...f.querySelectorAll('input[name=chk]:checked')].map(c=>c.value);
+  if (!d.name) { out.textContent = 'Fill in the business name to begin.'; waNote.innerHTML=''; return; }
+
+  const wa = waNumber(d.whatsapp);
+  waNote.innerHTML = !d.whatsapp ? ''
+    : wa && wa.length >= 11
+      ? `<div class="warn ok">WhatsApp will be saved as <strong>${wa}</strong> — that looks right.</div>`
+      : `<div class="warn">That doesn't look like a full SA number. Expecting something like 082 431 9076.</div>`;
+
+  const suburbs = list(d.suburbs);
+  const day = (o,c) => (o && c) ? `["${o}", "${c}"]` : 'null';
+  const wd = day(d.wdOpen, d.wdClose);
+  const date = d.checkedOn || new Date().toISOString().slice(0,10);
+
+  const checkLines = checks.map(t => {
+    const label = (t === 'trade_registration' && d.tradeLabel)
+      ? `, "label": ${q(d.tradeLabel)}` : '';
+    return `      { "type": "${t}", "checked_on": "${date}"${label} }`;
+  }).join(',\n');
+
+  const slug = slugify(d.name + ' ' + (suburbs[0] || ''));
+
+  out.textContent =
+`  {
+    "slug": ${q(slug)},
+    "name": ${q(d.name)},
+    "category": "${d.category}",
+    "suburbs_served": [${suburbs.map(q).join(', ')}],
+    "services": [${list(d.services).map(q).join(', ')}],
+    "description": ${q(d.description)},
+    "phone": ${q(d.phone)},
+    "whatsapp": ${q(wa)},
+    "status": "${d.status}",
+    "rating_avg": null,
+    "rating_count": 0,
+    "callout_from": ${d.callout ? parseInt(d.callout,10) : 'null'},
+    "hours": {
+      "mon": ${wd},
+      "tue": ${wd},
+      "wed": ${wd},
+      "thu": ${wd},
+      "fri": ${wd},
+      "sat": ${day(d.satOpen, d.satClose)},
+      "sun": ${day(d.sunOpen, d.sunClose)},
+      "emergency24h": ${d.emergency ? 'true' : 'false'}
+    },
+    "checks": [
+${checkLines}
+    ]
+  },`;
+}
+
+f.addEventListener('input', build);
+f.addEventListener('change', build);
+document.getElementById('copy').addEventListener('click', async e => {
+  try {
+    await navigator.clipboard.writeText(out.textContent);
+    e.target.textContent = 'Copied ✓';
+  } catch {
+    const r = document.createRange(); r.selectNode(out);
+    getSelection().removeAllRanges(); getSelection().addRange(r);
+    e.target.textContent = 'Selected — press copy';
+  }
+  setTimeout(()=>{ e.target.textContent = 'Copy to clipboard'; }, 2500);
+});
+build();
+</script>
+</body>
+</html>

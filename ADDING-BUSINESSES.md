@@ -8,7 +8,21 @@ project actually needs.
 
 ---
 
-## The loop
+## The easy way: use the form
+
+**[hireincapetown.co.za/tools/new-listing/](https://hireincapetown.co.za/tools/new-listing/)**
+
+Fill it in, press **Copy**, paste into `db/seed.json` on GitHub, commit. The form
+writes the JSON for you, so there are no commas to get wrong, and it converts
+the WhatsApp number into the format the site needs — type `082 431 9076` and it
+saves `27824319076`, which is the mistake most worth not making.
+
+The page is `noindex`, so it will not appear in search results. Bookmark it.
+
+If you would rather type the JSON by hand, the rest of this file explains every
+field.
+
+## The loop, by hand
 
 1. Go to **[db/seed.json](https://github.com/iinfoman/Hireincapetown/blob/main/db/seed.json)**
 2. Click the **pencil icon** (top right of the file)
