@@ -114,12 +114,64 @@ listed.
 
 ---
 
-## Later: the database
+## Is there a private dashboard?
 
-`db/seed.json` is deliberately simple, and it is enough for the first few dozen
-listings. When businesses start registering themselves you will want the
-Supabase database instead — the schema is already applied and waiting. Setting
-`DATABASE_URL` in Netlify switches the build over to it. See `HANDOVER.md`.
+Not a custom one. It is designed (see the business dashboard artboard in
+`design/`) and specced in `BRIEF.md`, but it was never built — the public
+directory came first on purpose, because it delivers value with no listings
+logic at all.
 
-Until then, this file is your directory. Editing it in a browser is a perfectly
-respectable way to run one.
+What exists instead are two admin surfaces you already own, both free, both
+password-protected, neither needing a line of code.
+
+### Option A — github.com (what this file describes)
+
+Edit `db/seed.json`, commit, the site rebuilds. Private to your GitHub account.
+
+**Good:** nothing to set up, nothing to break, and a bad edit fails the build
+without touching the live site.
+**Less good:** it is raw JSON. Commas matter.
+
+### Option B — the Supabase Table Editor
+
+This is the closest thing to the dashboard you are picturing: a real admin UI
+with rows, columns, add/edit/delete buttons, and a login. It already exists at
+[supabase.com/dashboard](https://supabase.com/dashboard) → the
+**SolarinstallersSA** project → **Table Editor** → schema **`hireincapetown`**.
+
+The tables are already there and already hold the seeded businesses.
+
+To make the site read from it instead of `seed.json`:
+
+1. Supabase → **Project Settings → Database → Connection string → URI**. Take
+   the pooled one (port **6543**) and fill in your database password.
+2. Netlify → your project → **Project configuration → Environment variables** →
+   add `DATABASE_URL` with that value.
+3. **Trigger deploy** in Netlify.
+
+From then on the loop is: add a row in the Supabase Table Editor → Netlify →
+**Trigger deploy**. About a minute.
+
+**Good:** a proper table UI, no JSON, and it is where business registrations
+will land when that flow is built.
+**Less good:** the site is static, so the database changing does not update it —
+you must trigger the deploy yourself. And the free Supabase tier pauses a
+project after about a week of no use.
+
+That pause used to be dangerous: a sleeping database would fail the build and
+block every deploy. It no longer does — the build falls back to `seed.json`,
+ships anyway, and prints a loud warning in the Netlify deploy log. Worth knowing
+so you recognise it: **if your new listings do not appear, read the deploy log.**
+A paused database means the site published whatever `seed.json` last held.
+
+### Which to use
+
+Start with **Option A**. For the first twenty or thirty listings it is simpler,
+has fewer moving parts, and cannot be broken by a sleeping database.
+
+Move to **Option B** when the JSON starts to feel unwieldy, or when you want to
+record things the public site does not show — verification documents, notes on
+who you spoke to, businesses still pending a check.
+
+Either way, the real work is the same: find good businesses, check their
+documents, and write down honestly what you checked.
