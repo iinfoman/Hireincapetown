@@ -2,6 +2,22 @@ import { Layout } from '../components/Layout.jsx';
 import { NeedBar } from '../components/NeedBar.jsx';
 import { BusinessCard } from '../components/BusinessCard.jsx';
 
+const Empty = ({ category, suburb }) => (
+  <div className="rounded-[18px] border border-line bg-white p-5 md:max-w-[640px] md:p-7">
+    <h3 className="font-dsp text-[19px] font-bold md:text-[23px]">
+      Nobody here yet{suburb ? ` in ${suburb.name}` : ''}
+    </h3>
+    <p className="mt-2.5 text-[14.5px] leading-relaxed text-ink-2">
+      We are checking our first {category.label.toLowerCase()} now — ID, trading address, and the
+      trade registration where the work calls for one. A listing goes up when that is done and not
+      before, which is the whole point of this site.
+    </p>
+    <p className="mt-2.5 text-[14.5px] leading-relaxed text-ink-2">
+      If you do this work in Cape Town, being the first listing in a category is worth having.
+    </p>
+  </div>
+);
+
 /** Serves both /:category and the money pages, /:category/:suburb. */
 export const Results = ({ category, suburb, businesses, suburbs, nearby, heading, intro }) => (
   <Layout>
@@ -22,25 +38,33 @@ export const Results = ({ category, suburb, businesses, suburbs, nearby, heading
     </div>
 
     <section className="mx-auto max-w-[1180px] px-4 pt-10 md:px-10">
-      <div className="mb-3.5 flex items-baseline justify-between">
-        <h2 className="font-dsp text-[17px] font-bold md:text-[20px]">
-          {businesses.length} verified {businesses.length === 1 ? category.one : category.label.toLowerCase()}
-          {suburb ? ` serving ${suburb.name}` : ' in Cape Town'}
-        </h2>
-      </div>
+      {businesses.length > 0 && (
+        <div className="mb-3.5 flex items-baseline justify-between">
+          <h2 className="font-dsp text-[17px] font-bold md:text-[20px]">
+            {businesses.length} verified {businesses.length === 1 ? category.one : category.label.toLowerCase()}
+            {suburb ? ` serving ${suburb.name}` : ' in Cape Town'}
+          </h2>
+        </div>
+      )}
 
-      <ul className="grid gap-2.5 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
-        {businesses.map((b, i) => (
-          <li key={b.slug}><BusinessCard business={b} index={i} context={category.one} /></li>
-        ))}
-      </ul>
+      {businesses.length === 0 ? (
+        <Empty category={category} suburb={suburb} />
+      ) : (
+        <>
+          <ul className="grid gap-2.5 md:grid-cols-2 md:gap-4 lg:grid-cols-3">
+            {businesses.map((b, i) => (
+              <li key={b.slug}><BusinessCard business={b} index={i} context={category.one} /></li>
+            ))}
+          </ul>
 
-      <aside className="mt-4 flex items-start gap-3 rounded-[14px] bg-protea-tint p-3.5 md:max-w-[640px]">
-        <p className="text-[13px] leading-relaxed">
-          Only people who recorded a hire here can leave a review. That's why some listings show eleven
-          reviews and not four hundred.
-        </p>
-      </aside>
+          <aside className="mt-4 flex items-start gap-3 rounded-[14px] bg-protea-tint p-3.5 md:max-w-[640px]">
+            <p className="text-[13px] leading-relaxed">
+              Only people who recorded a hire here can leave a review. That's why some listings show eleven
+              reviews and not four hundred.
+            </p>
+          </aside>
+        </>
+      )}
 
       {nearby.length > 0 && (
         <div className="mt-12">

@@ -78,7 +78,10 @@ const suburbs = [...new Set(businesses.flatMap((b) => b.suburbs_served))]
   .sort((a, b) => a.localeCompare(b))
   .map((name) => ({ name, slug: slugify(name) }));
 
-const liveCategories = CATEGORIES.filter((c) => businesses.some((b) => b.category === c.slug));
+// Every category gets a page, listings or not. The home page links all eight
+// chips, so a category page that only exists once someone is listed in it is a
+// 404 on the most-clicked element of the site — which was true for beauty,
+// home repairs, auto and photography from the day this launched.
 
 // --- home -------------------------------------------------------------------
 const seoLinks = [...index.values()]
@@ -97,17 +100,23 @@ await emit('', shell({
 }));
 
 // --- category and the category x suburb pages -------------------------------
-for (const category of liveCategories) {
+for (const category of CATEGORIES) {
   const inCategory = businesses.filter((b) => b.category === category.slug);
 
   await emit(category.slug, shell({
-    title: `${category.label} in Cape Town — verified and reviewed | HireInCapeTown`,
-    description: `${inCategory.length} verified ${category.label.toLowerCase()} across Cape Town. ID and trade registration checked. Contact them on WhatsApp or call directly.`,
+    title: inCategory.length
+      ? `${category.label} in Cape Town — verified and reviewed | HireInCapeTown`
+      : `${category.label} in Cape Town | HireInCapeTown`,
+    description: inCategory.length
+      ? `${inCategory.length} verified ${category.label.toLowerCase()} across Cape Town. ID and trade registration checked. Contact them on WhatsApp or call directly.`
+      : `We are verifying our first ${category.label.toLowerCase()} in Cape Town. Every listing has its ID, trading address and trade registration checked before it goes up.`,
     canonical: `/${category.slug}`,
     body: render('Results', {
       category, suburb: null, businesses: inCategory, suburbs,
       heading: `${category.label} in Cape Town`,
-      intro: `Every ${category.one} here has had their ID and address checked, and the trade registration where the work calls for one. Reviews come only from customers who recorded a hire.`,
+      intro: inCategory.length
+        ? `Every ${category.one} here has had their ID and address checked, and the trade registration where the work calls for one. Reviews come only from customers who recorded a hire.`
+        : `We vet before we publish, so this page fills up slower than a directory that lists whoever asks.`,
       nearby: [...index.values()]
         .filter((e) => e.category === category.slug)
         .sort((a, b) => b.businesses.length - a.businesses.length)
@@ -169,7 +178,7 @@ for (const b of businesses) {
 // The slugs are baked in at build time and the target is checked against them,
 // so a crafted ?category=//evil.com cannot turn this into an open redirect.
 const knownRoutes = JSON.stringify([
-  ...liveCategories.map((c) => `/${c.slug}`),
+  ...CATEGORIES.map((c) => `/${c.slug}`),
   ...[...index.keys()].map((k) => `/${k}`),
 ]);
 
