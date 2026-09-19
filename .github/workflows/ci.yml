@@ -49,4 +49,9 @@ jobs:
           for c in $(node -e "import('./src/lib/categories.js').then(m=>console.log(m.CATEGORIES.map(c=>c.slug).join(' ')))"); do
             test -f "dist/client/$c/index.html" || { echo "missing page for category $c"; exit 1; }
           done
+          # Linked from the header and footer of every page, so any one missing
+          # is a 404 on the whole site.
+          for i in list-your-business how-vetting-works report privacy; do
+            test -f "dist/client/$i/index.html" || { echo "missing $i"; exit 1; }
+          done
           echo "emitted $(find dist/client -name index.html | wc -l) pages"
