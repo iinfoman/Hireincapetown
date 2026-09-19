@@ -6,6 +6,11 @@ happens on github.com, and the site rebuilds itself within about a minute.
 This is how you get from 14 invented listings to the 20–30 real ones the
 project actually needs.
 
+This file is the **mechanics** — where the fields go and how to commit. For the
+part that matters, finding businesses and checking that they are what they claim
+to be, see **[VETTING.md](VETTING.md)**. Do that first; this is where the result
+gets typed up.
+
 ---
 
 ## The easy way: use the form
@@ -153,39 +158,47 @@ with rows, columns, add/edit/delete buttons, and a login. It already exists at
 [supabase.com/dashboard](https://supabase.com/dashboard) → the
 **SolarinstallersSA** project → **Table Editor** → schema **`hireincapetown`**.
 
-The tables are already there and already hold the seeded businesses.
+**Read it freely. Do not edit listings there while the sync is running.**
 
-To make the site read from it instead of `seed.json`:
+`.github/workflows/sync-db.yml` copies `db/seed.json` into those tables every
+three days and on every change to the file. It runs one way only — file to
+database — so a row you edit by hand in the Table Editor gets written over on
+the next run, with no warning. There is one source of truth on purpose; two
+would eventually disagree, and you would find out from a customer.
 
-1. Supabase → **Project Settings → Database → Connection string → URI**. Take
-   the pooled one (port **6543**) and fill in your database password.
-2. Netlify → your project → **Project configuration → Environment variables** →
-   add `DATABASE_URL` with that value.
-3. **Trigger deploy** in Netlify.
+So the Table Editor is for *looking*: checking what the database holds, reading
+the verification records, and, later, seeing business registrations and quote
+requests arrive — those are written by the public, and the sync does not touch
+those tables.
 
-From then on the loop is: add a row in the Supabase Table Editor → Netlify →
-**Trigger deploy**. About a minute.
+If you would rather edit there and treat the database as the truth, that is a
+real choice, but make it deliberately, all three steps together:
 
-**Good:** a proper table UI, no JSON, and it is where business registrations
-will land when that flow is built.
-**Less good:** the site is static, so the database changing does not update it —
-you must trigger the deploy yourself. And the free Supabase tier pauses a
-project after about a week of no use.
+1. GitHub → **Actions** → **Sync database** → **⋯** → **Disable workflow**.
+   Skipping this is what causes silent overwrites.
+2. Supabase → **Connect** → **Session pooler** → copy the URI, fill in your
+   database password.
+3. Netlify → your project → **Project configuration → Environment variables** →
+   add `DATABASE_URL` with that value, then **Trigger deploy**.
 
-That pause used to be dangerous: a sleeping database would fail the build and
-block every deploy. It no longer does — the build falls back to `seed.json`,
-ships anyway, and prints a loud warning in the Netlify deploy log. Worth knowing
-so you recognise it: **if your new listings do not appear, read the deploy log.**
-A paused database means the site published whatever `seed.json` last held.
+From then on the loop is: edit a row in Supabase → Netlify → **Trigger deploy**.
+About a minute. But now the sleeping database is your problem again: with the
+keep-alive disabled the project pauses after about a week idle, and a paused
+project has to be restored by hand. The build will not fail — it falls back to
+whatever `seed.json` last held and prints a loud warning in the deploy log — but
+your new listings will not appear. **If a listing you added does not show up,
+read the Netlify deploy log.**
 
 ### Which to use
 
-Start with **Option A**. For the first twenty or thirty listings it is simpler,
-has fewer moving parts, and cannot be broken by a sleeping database.
+**Option A, for a long time.** For the first twenty or thirty listings it is
+simpler, has fewer moving parts, and cannot be broken by a sleeping database.
+The database stays current underneath it, so nothing is lost by waiting.
 
-Move to **Option B** when the JSON starts to feel unwieldy, or when you want to
-record things the public site does not show — verification documents, notes on
-who you spoke to, businesses still pending a check.
+Switch to **Option B** when the JSON genuinely starts to hurt — realistically a
+few hundred listings — or when you need to record things the public site does
+not show and the file has no place for: who you spoke to, what you thought of
+them, which check is due for renewal.
 
 Either way, the real work is the same: find good businesses, check their
 documents, and write down honestly what you checked.

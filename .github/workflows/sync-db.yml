@@ -1,0 +1,49 @@
+name: Sync database
+
+# Two jobs in one: keep the database's copy of the listings in step with
+# db/seed.json, and keep the database awake.
+#
+# The free Supabase tier pauses a project after roughly a week of no queries,
+# and restoring a paused project is a manual click. Running every three days
+# leaves room for one missed run before that becomes a problem.
+#
+# Nothing on the live site depends on this succeeding. hireincapetown.co.za is
+# built from db/seed.json in the repository, so a paused database, a missing
+# secret or a failed run here cannot take the site down or block a deploy.
+
+on:
+  schedule:
+    # 03:40 UTC = 05:40 SAST, every third day.
+    - cron: '40 3 */3 * *'
+  push:
+    branches: [main]
+    paths:
+      - 'db/seed.json'
+      - 'scripts/sync-db.mjs'
+      - '.github/workflows/sync-db.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: sync-db
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      # Exits 0 with an explanation when DATABASE_URL is not configured, so a
+      # fork or a repository without the secret gets a green run rather than a
+      # red one for something that is not broken.
+      - name: Sync db/seed.json into Supabase
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node scripts/sync-db.mjs

@@ -85,7 +85,9 @@ quote-request fan-out. See `BRIEF.md`.
   called `reviews`.
 - **Supabase free tier allows 2 active projects** and pauses anything idle for
   about a week. Ovibe and SolarinstallersSA are the two currently active. A
-  pause takes both apps in the shared project down together.
+  pause takes both apps in the shared project down together, and restoring one
+  is a manual click in the dashboard — nothing wakes it automatically. See
+  "The sleeping database" below, which is the arrangement that prevents it.
 - **The old standalone `hire in capetown` Supabase project** (`adexrspbgcsnumcgpzgq`)
   is unused and safe to delete: Settings → General → Danger Zone.
 - **Reviews are gated by a database constraint**, not by application code — see
@@ -94,6 +96,49 @@ quote-request fan-out. See `BRIEF.md`.
 - **ID documents are never shown in the UI** — only the date they were checked.
   POPIA. `verification_docs` has RLS on with no policy, so it is unreachable
   from any client.
+
+## The sleeping database
+
+The free Supabase tier pauses a project after about a week with no queries. That
+is a real problem for anything that reads the database to serve a page, and a
+non-problem here, because of how this is arranged:
+
+**The site never reads the database.** `hireincapetown.co.za` is built from
+`db/seed.json`, a file in this repository. A paused database, a lost password or
+a deleted Supabase account cannot take the site down or block a deploy. That is
+the actual fix — not a workaround for one.
+
+**The database is kept in step and kept awake** by
+`.github/workflows/sync-db.yml`, which runs `scripts/sync-db.mjs` every three
+days and on every push that changes `db/seed.json`. It reads the file, writes the
+database, and never the reverse, so there is one source of truth and a scheduled
+job can never overwrite a listing added by hand. Each run is enough activity to
+reset the pause clock; three days leaves room for one missed run.
+
+To switch it on, once, and then never again:
+
+1. Supabase dashboard → **Connect** → **Session pooler** → copy the URI, and
+   put the database password into it where it says `[YOUR-PASSWORD]`.
+   It must be the *pooler*, not the direct connection: direct is IPv6-only and
+   GitHub Actions runners are IPv4-only.
+2. GitHub → this repository → **Settings** → **Secrets and variables** →
+   **Actions** → **New repository secret**. Name it `DATABASE_URL`, paste the
+   URI, save.
+3. **Actions** tab → **Sync database** → **Run workflow**, to prove it works.
+
+Until that secret exists the workflow still runs and still passes — the script
+exits cleanly with an explanation rather than failing on a missing credential.
+
+Two things to know about the arrangement:
+
+- **A failed run is the alarm, not an outage.** If the workflow goes red, the
+  database needs restoring at supabase.com/dashboard. The site carries on
+  regardless; fix it when convenient.
+- **GitHub disables scheduled workflows after 60 days with no repository
+  activity**, and a commit pushed by the workflow itself does not count. If you
+  go two months without touching the repo, the keep-alive stops and the project
+  eventually pauses. Nothing breaks when that happens — restore the project and
+  re-enable the workflow from the Actions tab.
 
 ## Running it anywhere
 
