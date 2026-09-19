@@ -3,8 +3,11 @@
 No code editor, no terminal, no AI subscription, no developer. Everything below
 happens on github.com, and the site rebuilds itself within about a minute.
 
-This is how you get from 14 invented listings to the 20–30 real ones the
-project actually needs.
+All 14 seeded listings are now `"pending"`, so the live site shows no
+businesses at all. They were invented, with plausible Cape Town phone numbers,
+and a directory whose whole promise is "we checked this" cannot publish them.
+This file is how you get from an empty site to the 20–30 real, vetted listings
+the project actually needs.
 
 This file is the **mechanics** — where the fields go and how to commit. For the
 part that matters, finding businesses and checking that they are what they claim

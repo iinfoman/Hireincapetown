@@ -34,11 +34,19 @@ jobs:
       - name: Build and enforce the page-weight budget
         run: npm run build
 
+      # Asserts the pages that must exist whatever the listings are, rather than
+      # a page count. A count tracks how many businesses happen to be verified,
+      # so it goes red for a content decision and stays green for a real
+      # regression that drops, say, every suburb page but leaves the profiles.
       - name: Check the expected pages were emitted
         run: |
           test -f dist/client/index.html
           test -f dist/client/sitemap.xml
           test -f dist/client/robots.txt
-          pages=$(find dist/client -name index.html | wc -l)
-          echo "emitted $pages pages"
-          test "$pages" -ge 50
+          test -f dist/client/find/index.html
+          # Every category is linked from the home page, so every category needs
+          # a page — including the ones nobody is listed in yet.
+          for c in $(node -e "import('./src/lib/categories.js').then(m=>console.log(m.CATEGORIES.map(c=>c.slug).join(' ')))"); do
+            test -f "dist/client/$c/index.html" || { echo "missing page for category $c"; exit 1; }
+          done
+          echo "emitted $(find dist/client -name index.html | wc -l) pages"

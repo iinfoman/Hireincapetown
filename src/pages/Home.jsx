@@ -47,33 +47,55 @@ export const Home = ({ suburbs, featured, seoLinks }) => (
       </ul>
     </section>
 
-    <section className="mx-auto max-w-[1180px] px-4 pt-12 md:px-10 md:pt-14">
-      <div className="flex items-center gap-2.5">
-        <span className="block h-2 w-2 rounded-full bg-open shadow-[0_0_0_4px_rgba(31,164,94,0.16)]" />
-        <h2 className="font-dsp text-[20px] font-bold md:text-[27px]">Open right now</h2>
-      </div>
-      {/* Prerendered in full; the browser hides whoever is shut. Without JS you
-          simply see everyone, which is the correct fallback for a directory. */}
-      <p className="mb-4 mt-2 text-[13px] text-ink-2 md:text-[15px]">
-        <span className="js-open-count" data-total={featured.length}>{featured.length} businesses</span> taking calls across Cape Town.
-      </p>
-      <ul data-open-only className="grid gap-2.5 md:grid-cols-3 md:gap-4">
-        {featured.map((b, i) => (
-          <li key={b.slug} data-hours={JSON.stringify(b.hours ?? null)}><BusinessCard business={b} index={i} /></li>
-        ))}
-      </ul>
-    </section>
+    {featured.length > 0 ? (
+      <section className="mx-auto max-w-[1180px] px-4 pt-12 md:px-10 md:pt-14">
+        <div className="flex items-center gap-2.5">
+          <span className="block h-2 w-2 rounded-full bg-open shadow-[0_0_0_4px_rgba(31,164,94,0.16)]" />
+          <h2 className="font-dsp text-[20px] font-bold md:text-[27px]">Open right now</h2>
+        </div>
+        {/* Prerendered in full; the browser hides whoever is shut. Without JS you
+            simply see everyone, which is the correct fallback for a directory. */}
+        <p className="mb-4 mt-2 text-[13px] text-ink-2 md:text-[15px]">
+          <span className="js-open-count" data-total={featured.length}>{featured.length} businesses</span> taking calls across Cape Town.
+        </p>
+        <ul data-open-only className="grid gap-2.5 md:grid-cols-3 md:gap-4">
+          {featured.map((b, i) => (
+            <li key={b.slug} data-hours={JSON.stringify(b.hours ?? null)}><BusinessCard business={b} index={i} /></li>
+          ))}
+        </ul>
+      </section>
+    ) : (
+      /* No listings yet. A directory that vets before it publishes starts here,
+         and saying so plainly is worth more than a page padded to look busy. */
+      <section className="mx-auto max-w-[1180px] px-4 pt-12 md:px-10 md:pt-14">
+        <div className="rounded-[18px] border border-line bg-white p-5 md:max-w-[720px] md:p-8">
+          <h2 className="font-dsp text-[21px] font-bold md:text-[27px]">We are checking our first businesses</h2>
+          <p className="mt-3 text-[14.5px] leading-relaxed text-ink-2 md:text-[16px]">
+            HireInCapeTown is new. Nothing appears here until a person has seen the owner's ID, the
+            trading address, and the trade registration where the work calls for one — so right now
+            there is nothing to show you. That is the arrangement working, not a page that failed to
+            load.
+          </p>
+          <p className="mt-3 text-[14.5px] leading-relaxed text-ink-2 md:text-[16px]">
+            The first listings are being verified now. If you run a business in Cape Town, this is a
+            good moment to be one of them.
+          </p>
+        </div>
+      </section>
+    )}
 
-    <section className="mx-auto max-w-[1180px] px-4 pt-12 md:px-10 md:pt-14">
-      <h2 className="font-dsp text-[20px] font-bold md:text-[22px]">People in Cape Town are searching for</h2>
-      <p className="mb-4 mt-1.5 text-[13px] text-ink-2 md:text-[14.5px]">Every one of these is its own page, with real listings on it.</p>
-      <ul className="grid grid-cols-1 gap-x-7 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
-        {seoLinks.map((l) => (
-          <li key={l.href}>
-            <a href={l.href} className="text-[14.5px] font-medium text-protea hover:text-protea-deep hover:underline">{l.label}</a>
-          </li>
-        ))}
-      </ul>
-    </section>
+    {seoLinks.length > 0 && (
+      <section className="mx-auto max-w-[1180px] px-4 pt-12 md:px-10 md:pt-14">
+        <h2 className="font-dsp text-[20px] font-bold md:text-[22px]">People in Cape Town are searching for</h2>
+        <p className="mb-4 mt-1.5 text-[13px] text-ink-2 md:text-[14.5px]">Every one of these is its own page, with real listings on it.</p>
+        <ul className="grid grid-cols-1 gap-x-7 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
+          {seoLinks.map((l) => (
+            <li key={l.href}>
+              <a href={l.href} className="text-[14.5px] font-medium text-protea hover:text-protea-deep hover:underline">{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </Layout>
 );

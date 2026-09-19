@@ -97,6 +97,22 @@ quote-request fan-out. See `BRIEF.md`.
   POPIA. `verification_docs` has RLS on with no policy, so it is unreachable
   from any client.
 
+## The site currently shows no businesses
+
+All 14 seeded listings are `"status": "pending"`. They were invented — realistic
+Cape Town names, suburbs and prices, but not real companies, with phone numbers
+that could plausibly dial a stranger. A directory that sells verification cannot
+publish unverified listings, so they are held back rather than deleted: the
+records are still in `db/seed.json` as a shape reference for real ones.
+
+The site handles this properly rather than looking broken. The home page and
+every category page carry an honest empty state, and every category now gets a
+page whether or not anyone is listed in it — previously the home page linked all
+eight category chips while only four had pages, so beauty, home repairs, auto and
+photography had been 404ing since launch.
+
+To bring a listing back, change one word to `"verified"`. See VETTING.md first.
+
 ## The sleeping database
 
 The free Supabase tier pauses a project after about a week with no queries. That
