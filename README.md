@@ -56,10 +56,16 @@ Membership of this app is a row in `hireincapetown.profiles`, and every policy
 checks that via `is_member()`, never "is signed in".
 
 ```bash
-cp .env.example .env          # DATABASE_URL from Supabase → Settings → Database
+cp .env.example .env          # DATABASE_URL from Supabase → Connect → Session pooler
 npm run db:push               # applies db/migrations/0001_init.sql
-npm run db:seed               # loads db/seed.json (idempotent on slug)
+npm run db:sync               # pushes db/seed.json into the schema, idempotent
 ```
+
+`db/seed.json` is the source of truth and the database is a replica of it, never
+the other way round. The sync only ever reads the file and writes the database,
+so a scheduled run can never overwrite a listing someone just added by hand.
+`.github/workflows/sync-db.yml` runs it every three days, which doubles as the
+keep-alive that stops the free tier pausing the project.
 
 Three parts of the schema are load-bearing and should survive refactoring:
 
@@ -83,7 +89,8 @@ db/migrations/     schema, applied with npm run db:push
 db/seed.json       seed businesses; also the build's no-credentials fallback
 design/            design canvas artboards + tokens
 scripts/prerender.mjs   turns the React pages into static HTML, enforces the budget
-src/data/source.js      the single read path: Neon, or seed.json
+src/data/source.js      the single read path: Supabase, or seed.json
+scripts/sync-db.mjs     pushes seed.json into the database; also the keep-alive
 src/lib/hours.js        "open now" — the one thing computed in the browser
 src/pages/              Home, Results (category and category x suburb), Business
 ```
