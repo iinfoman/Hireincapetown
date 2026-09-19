@@ -11,6 +11,7 @@ import { loadBusinesses, suburbIndex } from '../src/data/source.js';
 import { CATEGORIES, byCategorySlug } from '../src/lib/categories.js';
 import { slugify } from '../src/lib/slug.js';
 import { ldJson } from '../src/lib/jsonld.js';
+import { CONTACT_EMAIL } from '../src/lib/site.js';
 
 const OUT = 'dist/client';
 const SITE = process.env.SITE_URL || 'https://hireincapetown.co.za';
@@ -170,6 +171,34 @@ for (const b of businesses) {
       alsoIn: businesses.filter((o) => o.category === b.category && o.slug !== b.slug).slice(0, 3),
     }),
   }));
+}
+
+// --- the pages linked from every header and footer -------------------------
+// These are not optional furniture: they are linked from the site chrome on
+// every page, so any one of them missing is a 404 on every page there is.
+const INFO = [
+  ['list-your-business', 'ListYourBusiness', 'List your business — free on HireInCapeTown',
+   'List your Cape Town business free. We check your ID, trading address and trade registration, then customers call or WhatsApp you directly. No listing fee, no commission.'],
+  ['how-vetting-works', 'HowVettingWorks', 'How vetting works | HireInCapeTown',
+   'What the verified badge means: identity, trading address and trade registration checked at source, with the date we checked. And what we do not check.'],
+  ['report', 'Report', 'Report a listing | HireInCapeTown',
+   'Report wrong details, a closed business or a bad experience. Listings go to pending while we investigate.'],
+  ['privacy', 'Privacy', 'Privacy & POPIA | HireInCapeTown',
+   'We set no cookies, run no analytics and store no documents. What we hold about listed businesses, and how to have it corrected or removed.'],
+];
+
+for (const [route, page, title, description] of INFO) {
+  await emit(route, shell({ title, description, canonical: `/${route}`, body: render(page, {}) }));
+}
+
+if (!CONTACT_EMAIL) {
+  // These pages exist to be acted on. Shipping them with no way to reply is a
+  // worse failure than a 404, because it looks like it works.
+  console.warn('\n  ' + '!'.repeat(64));
+  console.warn('  ! CONTACT_EMAIL is empty in src/lib/site.js.');
+  console.warn('  ! /list-your-business, /report and /privacy have shipped with no');
+  console.warn('  ! way for anyone to get in touch. Set it and redeploy.');
+  console.warn('  ' + '!'.repeat(64) + '\n');
 }
 
 // --- /find: the need-bar's target ------------------------------------------
