@@ -8,7 +8,7 @@
 // Left empty, the contact blocks are omitted rather than rendering a dead
 // mailto: — and scripts/prerender.mjs says so loudly at build time, because a
 // "list your business" page with no way to get in touch is worse than no page.
-export const CONTACT_EMAIL = '';
+export const CONTACT_EMAIL = 'info@hireincapetown.co.za';
 
 export const RESPONSIBLE_PARTY = 'HireInCapeTown';
 
