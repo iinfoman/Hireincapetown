@@ -86,7 +86,7 @@ Three parts of the schema are load-bearing and should survive refactoring:
 
 ```
 db/migrations/     schema, applied with npm run db:push
-db/seed.json       seed businesses; also the build's no-credentials fallback
+db/seed.json       the listings; source of truth, and what the site is built from
 design/            design canvas artboards + tokens
 scripts/prerender.mjs   turns the React pages into static HTML, enforces the budget
 src/data/source.js      the single read path: Supabase, or seed.json

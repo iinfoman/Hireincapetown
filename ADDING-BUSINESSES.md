@@ -6,6 +6,11 @@ happens on github.com, and the site rebuilds itself within about a minute.
 This is how you get from 14 invented listings to the 20–30 real ones the
 project actually needs.
 
+This file is the **mechanics** — where the fields go and how to commit. For the
+part that matters, finding businesses and checking that they are what they claim
+to be, see **[VETTING.md](VETTING.md)**. Do that first; this is where the result
+gets typed up.
+
 ---
 
 ## The easy way: use the form
