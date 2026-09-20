@@ -1,7 +1,8 @@
 import { Layout } from '../components/Layout.jsx';
-import { VerifiedBadge, UnverifiedBadge, Rating, OpenNow, ContactRow, Initials } from '../components/bits.jsx';
+import { VerifiedBadge, UnverifiedBadge, PromotedBadge, Rating, OpenNow, ContactRow, Initials } from '../components/bits.jsx';
 import { Check, Dot, Clock, Flag, Star } from '../components/Icons.jsx';
 import { rands, rating as fmtRating } from '../lib/slug.js';
+import { published, byNewest } from '../lib/reviews.js';
 import { slugify } from '../lib/slug.js';
 
 const CHECK_LABELS = {
@@ -35,6 +36,7 @@ const describeDays = (hours, keys) => {
 export const Business = ({ business: b, category, alsoIn }) => {
   const checks = new Map((b.checks ?? []).map((c) => [c.type, c]));
   const verified = b.status === 'verified';
+  const reviews = published(b.reviews).sort(byNewest);
   const homeSuburb = b.suburbs_served?.[0];
   const message = `Hi ${b.name}, I found you on HireInCapeTown — I need help with ${category?.one ?? 'a job'}.`;
 
@@ -53,6 +55,7 @@ export const Business = ({ business: b, category, alsoIn }) => {
             <header className="rounded-card bg-white p-4 md:p-6">
               <div className="flex flex-wrap items-center gap-2">
                 {verified ? <VerifiedBadge full /> : <UnverifiedBadge full />}
+                {b.promoted && <PromotedBadge />}
                 <OpenNow hours={b.hours} className="rounded-full bg-surface px-3 py-1.5" />
               </div>
               <div className="mt-3.5 flex gap-3.5">
@@ -130,15 +133,40 @@ export const Business = ({ business: b, category, alsoIn }) => {
                     </div>
                   </div>
                   <p className="text-[14px] leading-relaxed text-ink-2">
-                    From <strong className="text-ink">{b.rating_count}</strong> customers who recorded a hire
-                    through HireInCapeTown. Nobody else can review this business.
+                    From <strong className="text-ink">{b.rating_count}</strong>{' '}
+                    {b.rating_count === 1 ? 'customer' : 'customers'}. Every review is read by a
+                    person before it appears here, and we publish the bad ones too.
                   </p>
                 </div>
               ) : (
                 <p className="mt-3 text-[14px] leading-relaxed text-ink-2">
-                  No reviews yet. The first will appear once someone records a hire here.
+                  No reviews yet. Be the first — if you have used {b.name}, say how it went.
                 </p>
               )}
+
+              {reviews.length > 0 && (
+                <ul className="mt-5 space-y-4 border-t border-line pt-5">
+                  {reviews.map((r, i) => (
+                    <li key={i}>
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex gap-0.5 text-star">
+                          {[1, 2, 3, 4, 5].map((n) => (
+                            <span key={n} className={n <= r.rating ? '' : 'text-line-strong'}><Star size={13} /></span>
+                          ))}
+                        </span>
+                        <span className="text-[13.5px] font-bold">{r.author || 'Anonymous'}</span>
+                        {r.date && <span className="text-[12.5px] text-ink-2">{monthYear(r.date)}</span>}
+                      </div>
+                      {r.body && <p className="mt-1.5 text-[14px] leading-relaxed">{r.body}</p>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <a href={`/review?business=${b.slug}`}
+                 className="mt-5 inline-flex min-h-tap items-center rounded-ctl border border-ink px-4 text-[14px] font-bold hover:border-protea hover:text-protea">
+                Review {b.name}
+              </a>
             </section>
 
             <section className="mt-3.5 rounded-card border border-line bg-white p-4 md:p-6">

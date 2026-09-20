@@ -294,6 +294,15 @@ function problems(b, all) {
   if (b.status === "listed" && checks.length)
     out.push("Has checks recorded but is only 'listed' — should this be verified?");
 
+  if (b.promoted && b.status !== "verified" && b.status !== "listed")
+    out.push("Promoted but not on the site — paying for placement on a page nobody can see");
+
+  (b.reviews || []).forEach(function (r, i) {
+    var n = Number(r.rating);
+    if (!(n >= 1 && n <= 5)) out.push("Review " + (i + 1) + " has no usable rating");
+    if (!r.body) out.push("Review " + (i + 1) + " has no text");
+  });
+
   var reg = checks.filter(function (c) { return c.type === "trade_registration"; })[0];
   if (reg && reg.checked_on) {
     var age = (Date.now() - new Date(reg.checked_on).getTime()) / 86400000;
@@ -305,7 +314,10 @@ function problems(b, all) {
 // ---------------------------------------------------------------- search
 function haystack(b) {
   return [b.name, b.slug, b.category, b.description, b.phone, b.whatsapp, b.website,
-          (b.suburbs_served || []).join(" "), (b.services || []).join(" "), b.status]
+          (b.suburbs_served || []).join(" "), (b.services || []).join(" "), b.status,
+          b.promoted ? "promoted" : "",
+          // Searching a phrase somebody complained about should find it.
+          (b.reviews || []).map(function (r) { return (r.author || "") + " " + (r.body || ""); }).join(" ")]
     .join(" ").toLowerCase();
 }
 
@@ -316,6 +328,8 @@ function visible() {
     if (state.filters.category && b.category !== state.filters.category) return false;
     if (state.filters.flag === "problems" && !problems(b, state.all).length) return false;
     if (state.filters.flag === "nocontact" && (b.phone || b.whatsapp || b.website)) return false;
+    if (state.filters.flag === "promoted" && !b.promoted) return false;
+    if (state.filters.flag === "reviews" && !(b.reviews || []).length) return false;
     if (!terms.length) return true;
     var h = haystack(b);
     // Every term must appear: typing more words narrows, it never widens.
@@ -335,7 +349,10 @@ function renderStats() {
     { key:{flag:"problems"},   label:"Need attention", alert:true,
       val:n(function(b){ return problems(b, all).length > 0; }) },
     { key:{flag:"nocontact"},  label:"No way to contact", alert:true,
-      val:n(function(b){ return !b.phone && !b.whatsapp && !b.website; }) }
+      val:n(function(b){ return !b.phone && !b.whatsapp && !b.website; }) },
+    { key:{flag:"promoted"},   label:"Promoted", val:n(function(b){ return !!b.promoted; }) },
+    { key:{flag:"reviews"},    label:"With reviews",
+      val:n(function(b){ return (b.reviews || []).length > 0; }) }
   ];
   $("stats").innerHTML = tiles.map(function (t, i) {
     var pressed = t.on !== undefined ? t.on : (
@@ -464,6 +481,11 @@ function renderEditor() {
   h += '<label>Slug <span class="hint">The web address: /business/' + esc(b.slug) +
        '. Changing it breaks any link already shared.</span>' +
        '<input type="text" id="f_slug" value="' + esc(b.slug) + '"></label>';
+  h += '<label class="inline"><input type="checkbox" id="f_promoted"' + (b.promoted ? " checked" : "") +
+       '> This business pays for placement</label>' +
+       '<span class="hint">Moves them to the top of their category and suburb pages, with a' +
+       ' "Promoted" label on the card. It never changes the verified badge: money buys' +
+       ' position, not trust.</span>';
   h += '<label>Description<textarea id="f_description">' + esc(b.description) + "</textarea>" +
        '<span class="hint" id="descCount"></span></label>';
   h += "</fieldset>";
@@ -531,13 +553,50 @@ function renderEditor() {
        "> Takes emergency call-outs around the clock</label>";
   h += "</fieldset>";
 
-  // --- reviews (read only: the database owns these)
+  // --- reviews ------------------------------------------------------------
+  // The rating is not a field. It is whatever the published reviews average
+  // to, worked out at build time, so it cannot be typed in by hand and cannot
+  // disagree with the reviews printed underneath it.
+  var revs = b.reviews || [];
+  var live = revs.filter(function (r) { return (r.status || "published") === "published"; });
+  var avg = live.length
+    ? Math.round((live.reduce(function (n, r) { return n + Number(r.rating || 0); }, 0) / live.length) * 10) / 10
+    : null;
+
   h += "<fieldset><legend>Reviews</legend>";
-  h += '<p class="hint" style="margin:0">' + (b.rating_count
-      ? esc(b.rating_avg) + " from " + esc(b.rating_count) + " reviews."
-      : "No reviews yet.") +
-      " Ratings come from recorded hires and are maintained by the database — they are not editable here," +
-      " which is exactly why a rating on this site means something.</p>";
+  h += '<p class="hint" style="margin:0 0 10px">' + (avg === null
+      ? "No published reviews, so the site shows no rating."
+      : "<b>" + avg + "</b> from " + live.length + (live.length === 1 ? " review" : " reviews") +
+        ". The rating is worked out from these, so there is nothing to type.") +
+      " New ones arrive in Netlify, under Forms. Paste them in here to publish them.</p>";
+
+  h += revs.map(function (r, i) {
+    var removed = (r.status || "published") === "removed";
+    return '<div style="border-top:1px solid var(--line);padding:10px 0' + (removed ? ';opacity:.55' : '') + '">' +
+      '<div class="grid2">' +
+        '<label>Name shown<input type="text" class="rv" data-k="author" data-i="' + i + '" value="' + esc(r.author) + '"></label>' +
+        '<label>Stars<select class="rv" data-k="rating" data-i="' + i + '">' +
+          [1,2,3,4,5].map(function (n) {
+            return '<option value="' + n + '"' + (Number(r.rating) === n ? " selected" : "") + ">" + n + "</option>";
+          }).join("") + "</select></label>" +
+      "</div>" +
+      '<label>What they said<textarea class="rv" data-k="body" data-i="' + i + '" rows="3">' + esc(r.body) + "</textarea></label>" +
+      '<div class="grid2">' +
+        '<label>Date<input type="date" class="rv" data-k="date" data-i="' + i + '" value="' + esc(r.date) + '"></label>' +
+        '<label>Status<select class="rv" data-k="status" data-i="' + i + '">' +
+          '<option value="published"' + (removed ? "" : " selected") + ">Published</option>" +
+          '<option value="removed"' + (removed ? " selected" : "") + ">Removed, hidden from the site</option>" +
+        "</select></label>" +
+      "</div>" +
+      '<button type="button" class="rvdel" data-i="' + i + '" style="margin-top:8px;min-height:40px;border:1px solid var(--protea);' +
+      'color:var(--protea);background:#fff;border-radius:10px;padding:0 14px;font-weight:700;cursor:pointer">Delete permanently</button>' +
+      "</div>";
+  }).join("");
+
+  h += '<div class="addrow" style="margin-top:12px"><button type="button" id="rvAdd" style="flex:1">+ Add a review</button></div>';
+  h += '<p class="hint" style="margin-top:8px">When someone complains, set a review to <b>Removed</b>' +
+       ' rather than deleting it. It stops showing on the site and stops counting towards the rating,' +
+       ' but you keep what was said and when it came down. Delete is for spam.</p>';
   h += "</fieldset>";
 
   h += '<div class="actions">';
@@ -691,12 +750,53 @@ function wireEditor(b) {
     field(b, "hours", hrs);
   };
 
+  $("f_promoted").onchange = function () { field(b, "promoted", this.checked); renderEditor(); };
+
+  // --- reviews
+  Array.prototype.forEach.call(document.querySelectorAll(".rv"), function (el) {
+    var handler = function () {
+      var list = (b.reviews || []).slice();
+      var r = Object.assign({}, list[+el.dataset.i]);
+      r[el.dataset.k] = el.dataset.k === "rating" ? Number(el.value) : el.value;
+      list[+el.dataset.i] = r;
+      field(b, "reviews", list);
+      // A rating or status change moves the average, so redraw the panel; a
+      // keystroke in the body must not, or the caret jumps to the end.
+      if (el.dataset.k === "rating" || el.dataset.k === "status") renderEditor();
+    };
+    if (el.tagName === "SELECT" || el.type === "date") el.onchange = handler;
+    else el.oninput = handler;
+  });
+
+  Array.prototype.forEach.call(document.querySelectorAll(".rvdel"), function (el) {
+    el.onclick = function () {
+      var r = (b.reviews || [])[+el.dataset.i] || {};
+      if (!confirm('Delete this review permanently?\n\n"' + String(r.body || "").slice(0, 80) +
+                   '"\n\nSetting it to Removed hides it from the site but keeps the record, which is usually what you want.')) return;
+      var list = (b.reviews || []).slice();
+      list.splice(+el.dataset.i, 1);
+      field(b, "reviews", list);
+      renderEditor();
+    };
+  });
+
+  $("rvAdd").onclick = function () {
+    var list = (b.reviews || []).slice();
+    list.unshift({ author: "", rating: 5, body: "", date: today(), status: "published" });
+    field(b, "reviews", list);
+    renderEditor();
+    var first = document.querySelector('.rv[data-k="author"]');
+    if (first) first.focus();
+  };
+
   $("dupBtn").onclick = function () {
     var copy = JSON.parse(JSON.stringify(b));
     copy.name = b.name + " (copy)";
     copy.slug = uniqueSlug(slugify(copy.name));
     copy.status = "pending";
     copy.checks = [];
+    copy.reviews = [];
+    copy.promoted = false;
     state.all.push(copy);
     state.dirty = true;
     $("btnSave").disabled = false;
@@ -929,8 +1029,8 @@ $("btnNew").onclick = function () {
     slug: uniqueSlug("new-listing"), name: "", category: "plumbers",
     suburbs_served: [], services: [], description: "",
     phone: null, whatsapp: null, website: null,
-    status: "pending", rating_avg: null, rating_count: 0,
-    callout_from: null, hours: null, checks: []
+    status: "pending", promoted: false, rating_avg: null, rating_count: 0,
+    callout_from: null, hours: null, checks: [], reviews: []
   };
   state.all.unshift(rec);
   state.dirty = true;

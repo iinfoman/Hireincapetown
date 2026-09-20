@@ -68,8 +68,42 @@ GitHub settings.
 No token? The same dialog takes pasted JSON, and Save gives you a file to
 commit on github.com yourself.
 
-Ratings are deliberately not editable. They come from recorded hires, which is
-what makes a rating here mean anything.
+### Submissions arrive in Netlify, not by magic
+
+Two public forms feed you work:
+
+- **`/list-your-business`** — a business asking to be listed.
+- **`/review`** — a customer reviewing one, linked from every business page.
+
+Both post to **Netlify -> Forms**, where you read them. Netlify emails you and
+the free tier covers 100 submissions a month across both forms.
+
+**Nothing a stranger types reaches the site on its own.** You copy it into the
+dashboard and save. That step *is* the moderation, and it is why there is no
+spam filter to maintain and no comment queue to babysit.
+
+### Reviews and ratings
+
+The **Reviews** panel on each listing takes the text of a review, who said it,
+how many stars and when. The star rating shown on the site is worked out from
+the published reviews — there is no rating field to type, so the number and the
+comments underneath it can never disagree.
+
+Three states, and the middle one is the useful one:
+
+- **Published** — shows on the site, counts towards the rating.
+- **Removed** — hidden from the site, counts for nothing, record kept. Use this
+  when a business complains. You keep what was said and when it came down.
+- **Deleted** — gone. For spam only.
+
+### Promoted listings
+
+The **This business pays for placement** tick moves a listing to the top of its
+category and suburb pages and puts a **Promoted** label on the card.
+
+It does not touch the verified badge. A promoted listing that has not been
+checked still says "Not verified yet". Money buys position, never trust — that
+separation is the only reason the badge is worth selling placement against.
 
 ## The older way: the single-listing form
 
