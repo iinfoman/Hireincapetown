@@ -9,3 +9,12 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# The admin tools carry <meta name="robots" content="noindex">, but a header
+# covers anything that fetches the file without parsing it. They hold no
+# secrets - the GitHub token the dashboard uses lives in the operator's own
+# browser and is never served by this site.
+[[headers]]
+  for = "/tools/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
