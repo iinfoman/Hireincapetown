@@ -11,7 +11,7 @@ import { readFile } from 'node:fs/promises';
 
 const SELECT = `
   select b.slug, b.name, b.category, b.suburbs_served, b.services, b.description,
-         b.phone, b.whatsapp, b.status, b.rating_avg, b.rating_count,
+         b.phone, b.whatsapp, b.website, b.status, b.rating_avg, b.rating_count,
          b.callout_from, b.hours,
          coalesce(
            (select json_agg(json_build_object('type', v.doc_type, 'checked_on', v.checked_at, 'label', v.label))
@@ -19,8 +19,10 @@ const SELECT = `
              where v.business_id = b.id and v.checked_at is not null),
            '[]'::json) as checks
     from hireincapetown.businesses b
-   where b.status = 'verified'
-   order by b.rating_avg desc nulls last, b.rating_count desc`;
+   -- Both public states. 'verified' has had documents checked; 'listed' has
+   -- not, and says so on the page. 'pending' and 'rejected' never ship.
+   where b.status in ('verified', 'listed')
+   order by (b.status = 'verified') desc, b.rating_avg desc nulls last, b.rating_count desc`;
 
 let cache;
 
@@ -65,12 +67,17 @@ export async function loadBusinesses() {
 
   {
     const raw = JSON.parse(await readFile(new URL('../../db/seed.json', import.meta.url), 'utf8'));
-    // The public site only ever shows verified listings — mirror that here so
-    // the fallback can't accidentally be more permissive than the query.
-    cache = raw.filter((b) => b.status === 'verified')
-               .sort((a, b) => (b.rating_avg - a.rating_avg) || (b.rating_count - a.rating_count));
+    // Mirror the query exactly, so the fallback can't be more permissive.
+    // Verified first, then listed: a checked business outranks an unchecked
+    // one whatever its rating, because that is what the site is for.
+    const rank = (b) => (b.status === 'verified' ? 0 : 1);
+    cache = raw.filter((b) => b.status === 'verified' || b.status === 'listed')
+               .sort((a, b) => rank(a) - rank(b)
+                            || ((b.rating_avg ?? 0) - (a.rating_avg ?? 0))
+                            || ((b.rating_count ?? 0) - (a.rating_count ?? 0)));
     const why = process.env.DATABASE_URL ? 'database unreachable — see the warning above' : 'no DATABASE_URL';
-    console.log(`  data: ${cache.length} verified businesses from db/seed.json (${why})`);
+    const v = cache.filter((b) => b.status === 'verified').length;
+    console.log(`  data: ${cache.length} businesses from db/seed.json — ${v} verified, ${cache.length - v} listed (${why})`);
   }
   return cache;
 }
