@@ -47,6 +47,18 @@ field and a save that commits straight to GitHub. This is the tool to use.
 - **Save** validates everything first, shows what will be live, and commits to
   `db/seed.json`. Netlify rebuilds in about a minute.
 
+### It is password-protected
+
+The browser asks for a password before the page loads at all. Type anything as
+the username; only the password matters.
+
+Set it once: Netlify -> **Site configuration** -> **Environment variables** ->
+add `TOOLS_PASSWORD` -> redeploy. Until you do, the tools are closed to
+everyone including you, and the page says so.
+
+To change it later, edit that variable and redeploy. To lock yourself out of a
+shared device, close the browser.
+
 Connect it once: press **Data**, paste a GitHub fine-grained token with
 **Contents: Read and write** on this repository. The token is stored only in
 your own browser and is sent only to github.com - the page itself holds no

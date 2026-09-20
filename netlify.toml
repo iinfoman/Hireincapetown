@@ -10,10 +10,9 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# The admin tools carry <meta name="robots" content="noindex">, but a header
-# covers anything that fetches the file without parsing it. They hold no
-# secrets - the GitHub token the dashboard uses lives in the operator's own
-# browser and is never served by this site.
+# /tools/* is password-gated by netlify/edge-functions/protect-tools.js, which
+# runs before any file is served. This header is belt and braces for anything
+# that somehow fetches a tools URL without parsing its noindex meta tag.
 [[headers]]
   for = "/tools/*"
   [headers.values]

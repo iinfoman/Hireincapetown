@@ -120,6 +120,16 @@ searchable, fully editable, saving straight to GitHub. It needs a fine-grained
 GitHub token with Contents: Read and write, entered once and kept in your
 browser. See ADDING-BUSINESSES.md.
 
+**Everything under `/tools/` is password-protected** by
+`netlify/edge-functions/protect-tools.js`, which runs at Netlify's edge before
+any file is served — so the HTML never reaches an unauthenticated visitor. Set
+`TOOLS_PASSWORD` in Netlify's environment variables. With no password set the
+tools are closed to everyone: it fails shut, never open, and `test/auth.test.js`
+holds that behaviour in place.
+
+Netlify's own password-protection feature is a paid plan. This is an edge
+function on the free tier and does the same job.
+
 It is a static page with no server and no credentials of its own, so there is
 nothing to pay for and nothing to keep running. If the token is ever lost or
 revoked, the same page still takes pasted JSON and gives a file back.
