@@ -33,6 +33,7 @@ export const Layout = ({ children, dark = false }) => (
         <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 border-t border-[#2C3542] pt-7 text-[13px] text-[#8B94A1]">
           <a href="/privacy" className="hover:text-white">Privacy &amp; POPIA</a>
           <a href="/how-vetting-works" className="hover:text-white">How vetting works</a>
+          <a href="/review" className="hover:text-white">Leave a review</a>
           <a href="/report" className="hover:text-white">Report a listing</a>
           <span className="ml-auto">Cape Town, South Africa</span>
         </div>
