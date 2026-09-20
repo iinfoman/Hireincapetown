@@ -266,14 +266,36 @@ export const Report = () => (
     title="Report a listing"
     intro="Wrong details, a business that has closed, or a bad experience — tell us and we will act on it."
   >
-    <H2>What to send</H2>
-    <Ul>
-      <Li>The name of the business, or a link to its page.</Li>
-      <Li>What is wrong. Wrong number, closed down, not registered, or what happened when you
-        hired them.</Li>
-      <Li>Roughly when it happened, if it was a job.</Li>
-    </Ul>
-    <EmailButton subject="Reporting a listing on HireInCapeTown" label="Report a listing by email" />
+    <form {...FORM_PROPS('report')} className="rounded-[18px] border border-line bg-white p-4 md:p-6">
+      <Hidden name="report" />
+
+      <Field label="Which business?" hint="The name, or paste the link to its page.">
+        <input className={input} name="business" id="reportBusiness" required />
+      </Field>
+
+      <Field label="What is the problem?">
+        <select className={input} name="reason" required defaultValue="">
+          <option value="" disabled>Choose one</option>
+          <option value="wrong-details">Wrong details — number, address or hours</option>
+          <option value="closed">They have closed down</option>
+          <option value="not-registered">Not registered for the work they advertise</option>
+          <option value="bad-job">Something went wrong on a job</option>
+          <option value="review">A review on this listing is untrue or abusive</option>
+          <option value="mine">This is my business and I did not ask to be listed</option>
+          <option value="other">Something else</option>
+        </select>
+      </Field>
+
+      <Field label="Tell us what happened" hint="Dates and details help. If it is about a review, quote the part you mean.">
+        <textarea className={input} name="detail" rows={5} required minLength={15} />
+      </Field>
+
+      <Field label="How we reach you" hint="Phone or email. We reply to every report, and we never pass it to the business.">
+        <input className={input} name="contact" required />
+      </Field>
+
+      <Submit>Send report</Submit>
+    </form>
 
     <H2>What happens next</H2>
     <P>
@@ -295,6 +317,12 @@ export const Report = () => (
       against a plumber, the Plumbing Industry Registration Board takes those; for electrical
       work, the Department of Employment and Labour does. We will point you to the right one.
     </P>
+
+    {/* /report?business=slug comes from the link on a business page. */}
+    <script dangerouslySetInnerHTML={{ __html:
+      "(function(){var s=new URLSearchParams(location.search).get('business');" +
+      "var el=document.getElementById('reportBusiness');" +
+      "if(s&&el&&/^[a-z0-9-]+$/.test(s))el.value=s;})();" }} />
 
     <H2>If you are the business</H2>
     <P>

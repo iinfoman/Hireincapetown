@@ -74,9 +74,10 @@ Two public forms feed you work:
 
 - **`/list-your-business`** — a business asking to be listed.
 - **`/review`** — a customer reviewing one, linked from every business page.
+- **`/report`** — someone flagging a wrong listing or an abusive review.
 
-Both post to **Netlify -> Forms**, where you read them. Netlify emails you and
-the free tier covers 100 submissions a month across both forms.
+All three post to **Netlify -> Forms**, where you read them. Netlify emails you and
+the free tier covers 100 submissions a month across all three.
 
 **Nothing a stranger types reaches the site on its own.** You copy it into the
 dashboard and save. That step *is* the moderation, and it is why there is no

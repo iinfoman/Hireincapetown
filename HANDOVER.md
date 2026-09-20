@@ -136,10 +136,15 @@ revoked, the same page still takes pasted JSON and gives a file back.
 
 ## Submissions, reviews and promoted listings
 
-**Two public forms** post to Netlify Forms: `/list-your-business` and
-`/review`. No database, no function, no key — Netlify finds them by scanning
+**Three public forms** post to Netlify Forms: `/list-your-business`,
+`/review` and `/report`. No database, no function, no key — Netlify finds them by scanning
 the deployed HTML. Free tier is 100 submissions a month across both. They
 appear under **Forms** in the Netlify dashboard and Netlify emails you.
+
+Form detection is a per-site setting in Netlify (Site configuration -> Forms)
+and it is scanned **at build time**. Turning it on does not retrofit the deploy
+that is already live — the next build after enabling it is the one that finds
+the forms.
 
 Nothing submitted appears on the site until you paste it into the dashboard
 and save. That is deliberate: it is the moderation, and it needs no spam
