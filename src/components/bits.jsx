@@ -1,4 +1,4 @@
-import { Shield, Star, Chat, Phone, Pin } from './Icons.jsx';
+import { Shield, Star, Chat, Phone, Pin, Dot } from './Icons.jsx';
 import { rating as fmtRating } from '../lib/slug.js';
 
 export const VerifiedBadge = ({ full = false }) =>
@@ -8,6 +8,23 @@ export const VerifiedBadge = ({ full = false }) =>
     </span>
   ) : (
     <span className="text-trust" title="Verified business"><Shield size={16} /></span>
+  );
+
+/**
+ * The counterpart to VerifiedBadge, and the reason the site can publish a
+ * business nobody has checked without lying about it. Never omit this on a
+ * 'listed' record — a listing with neither badge reads as verified.
+ */
+export const UnverifiedBadge = ({ full = false }) =>
+  full ? (
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-surface px-2.5 py-1.5 text-xs font-bold text-ink-2">
+      <Dot size={13} /> Not verified yet
+    </span>
+  ) : (
+    <span className="rounded-full border border-line-strong px-1.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-ink-2"
+          title="Nobody has checked this business's documents yet">
+      Unverified
+    </span>
   );
 
 export const Rating = ({ avg, count }) => {
@@ -47,7 +64,9 @@ export const ContactRow = ({ business, message, size = 'md' }) => {
   const wa = business.whatsapp?.trim();
   const tel = business.phone?.replace(/[^\d+]/g, '');
 
-  if (!wa && !tel) {
+  const site = business.website?.trim();
+
+  if (!wa && !tel && !site) {
     return <p className="text-[13px] text-ink-2">No contact details on file yet.</p>;
   }
 
@@ -61,6 +80,14 @@ export const ContactRow = ({ business, message, size = 'md' }) => {
       {tel && (
         <a href={`tel:${tel}`} className={`${base} border border-line-strong bg-white text-ink`}>
           <Phone size={16} /> Call
+        </a>
+      )}
+      {/* Last resort. An unverified listing often has a website and nothing
+          else, and a listing with no way to make contact is not a listing. */}
+      {!wa && !tel && site && (
+        <a href={site} rel="nofollow noopener" target="_blank"
+           className={`${base} border border-line-strong bg-white text-ink`}>
+          Visit website
         </a>
       )}
     </div>

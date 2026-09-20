@@ -3,7 +3,18 @@
 No code editor, no terminal, no AI subscription, no developer. Everything below
 happens on github.com, and the site rebuilds itself within about a minute.
 
-All 14 seeded listings are now `"pending"`, so the live site shows no
+## The three states a listing can be in
+
+| `status` | On the site? | Means |
+|---|---|---|
+| `"verified"` | Yes, with the verified badge | A person saw the documents. Record what and when in `checks`. |
+| `"listed"` | Yes, marked **Unverified** | Real business, details from a public source, nobody has checked it. `checks` must be empty. |
+| `"pending"` | No | Held back — being checked, or withdrawn. |
+
+Never put a listing on `"verified"` without filling in `checks`. The badge is
+the only thing this site sells.
+
+All 14 seeded fixtures are `"pending"`, so the live site shows no
 businesses at all. They were invented, with plausible Cape Town phone numbers,
 and a directory whose whole promise is "we checked this" cannot publish them.
 This file is how you get from an empty site to the 20–30 real, vetted listings

@@ -17,7 +17,7 @@
 import { readFile } from 'node:fs/promises';
 
 const REQUIRED = ['slug', 'name', 'category', 'status'];
-const STATUSES = new Set(['pending', 'verified', 'rejected']);
+const STATUSES = new Set(['pending', 'listed', 'verified', 'rejected']);
 
 if (!process.env.DATABASE_URL) {
   // Not an error. A clean checkout has no credentials, and CI proves the site
@@ -88,7 +88,7 @@ try {
 
     const values = [
       b.name, b.slug, b.category, b.suburbs_served ?? [], b.services ?? [],
-      b.description ?? null, b.phone ?? null, b.whatsapp ?? null, b.status,
+      b.description ?? null, b.phone ?? null, b.whatsapp ?? null, b.website ?? null, b.status,
       b.rating_avg ?? null, b.rating_count ?? 0, b.callout_from ?? null,
       b.hours ? JSON.stringify(b.hours) : null,
     ];
@@ -96,8 +96,8 @@ try {
     const { rows: [row] } = await client.query(
       `insert into hireincapetown.businesses
          (name, slug, category, suburbs_served, services, description, phone,
-          whatsapp, status, rating_avg, rating_count, callout_from, hours)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+          whatsapp, website, status, rating_avg, rating_count, callout_from, hours)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
        on conflict (slug) do update set
          name           = excluded.name,
          category       = excluded.category,
@@ -106,9 +106,10 @@ try {
          description    = excluded.description,
          phone          = excluded.phone,
          whatsapp       = excluded.whatsapp,
+         website        = excluded.website,
          status         = excluded.status,
-         rating_avg     = case when $14 then hireincapetown.businesses.rating_avg   else excluded.rating_avg   end,
-         rating_count   = case when $14 then hireincapetown.businesses.rating_count else excluded.rating_count end,
+         rating_avg     = case when $15 then hireincapetown.businesses.rating_avg   else excluded.rating_avg   end,
+         rating_count   = case when $15 then hireincapetown.businesses.rating_count else excluded.rating_count end,
          callout_from   = excluded.callout_from,
          hours          = excluded.hours,
          updated_at     = now()
@@ -151,8 +152,9 @@ try {
   await client.end();
 }
 
-const live = businesses.filter((b) => b.status === 'verified').length;
+const live = businesses.filter((b) => b.status === 'verified' || b.status === 'listed').length;
 console.log(`synced ${businesses.length} businesses: ${created} added, ${updated} updated`);
 if (checksAdded) console.log(`  ${checksAdded} verification records added`);
-console.log(`  ${live} verified and live, ${businesses.length - live} held back`);
+const ver = businesses.filter((b) => b.status === 'verified').length;
+console.log(`  ${live} live (${ver} verified, ${live - ver} listed), ${businesses.length - live} held back`);
 console.log('  database is awake; the pause clock has been reset');

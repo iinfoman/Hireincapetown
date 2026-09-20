@@ -6,7 +6,13 @@ import { CATEGORIES } from '../lib/categories.js';
 import { HeroArt } from '../components/HeroArt.jsx';
 
 
-export const Home = ({ suburbs, featured, seoLinks }) => (
+export const Home = ({ suburbs, featured, seoLinks }) => {
+  // "Open right now" is only meaningful once somebody has given us hours.
+  // Unverified listings taken from a website rarely have any, and filtering a
+  // list by a field nobody filled in shows an empty section under a heading
+  // that promises the opposite.
+  const anyHours = featured.some((b) => b.hours);
+  return (
   <Layout>
     <section className="relative isolate overflow-hidden bg-ink">
       <HeroArt />
@@ -47,7 +53,7 @@ export const Home = ({ suburbs, featured, seoLinks }) => (
       </ul>
     </section>
 
-    {featured.length > 0 ? (
+    {featured.length > 0 && anyHours ? (
       <section className="mx-auto max-w-[1180px] px-4 pt-12 md:px-10 md:pt-14">
         <div className="flex items-center gap-2.5">
           <span className="block h-2 w-2 rounded-full bg-open shadow-[0_0_0_4px_rgba(31,164,94,0.16)]" />
@@ -62,6 +68,18 @@ export const Home = ({ suburbs, featured, seoLinks }) => (
           {featured.map((b, i) => (
             <li key={b.slug} data-hours={JSON.stringify(b.hours ?? null)}><BusinessCard business={b} index={i} /></li>
           ))}
+        </ul>
+      </section>
+    ) : featured.length > 0 ? (
+      <section className="mx-auto max-w-[1180px] px-4 pt-12 md:px-10 md:pt-14">
+        <h2 className="font-dsp text-[20px] font-bold md:text-[27px]">On HireInCapeTown</h2>
+        {/* No count here: `featured` is capped at six, so any number printed
+            would understate how many listings there actually are. */}
+        <p className="mb-4 mt-2 text-[13px] text-ink-2 md:text-[15px]">
+          Each listing says whether a person has checked it.
+        </p>
+        <ul className="grid gap-2.5 md:grid-cols-3 md:gap-4">
+          {featured.map((b, i) => <li key={b.slug}><BusinessCard business={b} index={i} /></li>)}
         </ul>
       </section>
     ) : (
@@ -98,4 +116,5 @@ export const Home = ({ suburbs, featured, seoLinks }) => (
       </section>
     )}
   </Layout>
-);
+  );
+};

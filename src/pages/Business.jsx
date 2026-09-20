@@ -1,5 +1,5 @@
 import { Layout } from '../components/Layout.jsx';
-import { VerifiedBadge, Rating, OpenNow, ContactRow, Initials } from '../components/bits.jsx';
+import { VerifiedBadge, UnverifiedBadge, Rating, OpenNow, ContactRow, Initials } from '../components/bits.jsx';
 import { Check, Dot, Clock, Flag, Star } from '../components/Icons.jsx';
 import { rands, rating as fmtRating } from '../lib/slug.js';
 import { slugify } from '../lib/slug.js';
@@ -34,6 +34,7 @@ const describeDays = (hours, keys) => {
 
 export const Business = ({ business: b, category, alsoIn }) => {
   const checks = new Map((b.checks ?? []).map((c) => [c.type, c]));
+  const verified = b.status === 'verified';
   const homeSuburb = b.suburbs_served?.[0];
   const message = `Hi ${b.name}, I found you on HireInCapeTown — I need help with ${category?.one ?? 'a job'}.`;
 
@@ -51,7 +52,7 @@ export const Business = ({ business: b, category, alsoIn }) => {
           <div>
             <header className="rounded-card bg-white p-4 md:p-6">
               <div className="flex flex-wrap items-center gap-2">
-                <VerifiedBadge full />
+                {verified ? <VerifiedBadge full /> : <UnverifiedBadge full />}
                 <OpenNow hours={b.hours} className="rounded-full bg-surface px-3 py-1.5" />
               </div>
               <div className="mt-3.5 flex gap-3.5">
@@ -65,6 +66,26 @@ export const Business = ({ business: b, category, alsoIn }) => {
               <div className="mt-4 md:hidden"><ContactRow business={b} message={message} size="lg" /></div>
             </header>
 
+            {!verified ? (
+              <section className="mt-3.5 rounded-card border border-line-strong bg-surface p-4 md:p-6">
+                <h2 className="font-dsp text-[17.5px] font-bold">We have not checked this business yet</h2>
+                <p className="mt-3 text-[14px] leading-relaxed text-ink-2">
+                  These details were taken from {b.name}'s own website and public listings. Nobody
+                  here has seen an ID, confirmed the trading address, or checked a trade
+                  registration — so treat this the way you would any name you found online, and
+                  ask for the registration number yourself before work starts.
+                </p>
+                <p className="mt-3 text-[14px] leading-relaxed text-ink-2">
+                  We are working through these listings. When the checks are done this panel is
+                  replaced by what was checked and when.
+                  <a href="/how-vetting-works" className="ml-1 font-semibold text-protea hover:underline">How vetting works</a>
+                </p>
+                <p className="mt-3 text-[12.5px] leading-relaxed text-ink-2">
+                  Is this your business? <a href="/report" className="font-semibold text-protea hover:underline">Tell us</a> and
+                  we will correct it or take it down the same day.
+                </p>
+              </section>
+            ) : (
             <section className="mt-3.5 rounded-card border border-line bg-white p-4 md:p-6">
               <h2 className="font-dsp text-[17.5px] font-bold">What we checked</h2>
               <ul className="mt-3.5 space-y-2.5">
@@ -85,6 +106,7 @@ export const Business = ({ business: b, category, alsoIn }) => {
                 <a href="/how-vetting-works" className="ml-1 font-semibold text-protea hover:underline">How vetting works</a>
               </p>
             </section>
+            )}
 
             <section className="mt-3.5 rounded-card border border-line bg-white p-4 md:p-6">
               <h2 className="font-dsp text-[17.5px] font-bold">About</h2>

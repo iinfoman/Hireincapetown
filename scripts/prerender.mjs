@@ -109,14 +109,14 @@ for (const category of CATEGORIES) {
       ? `${category.label} in Cape Town — verified and reviewed | HireInCapeTown`
       : `${category.label} in Cape Town | HireInCapeTown`,
     description: inCategory.length
-      ? `${inCategory.length} verified ${category.label.toLowerCase()} across Cape Town. ID and trade registration checked. Contact them on WhatsApp or call directly.`
+      ? `${inCategory.length} ${category.label.toLowerCase()} across Cape Town, each marked verified or not yet verified. Contact them on WhatsApp or call directly.`
       : `We are verifying our first ${category.label.toLowerCase()} in Cape Town. Every listing has its ID, trading address and trade registration checked before it goes up.`,
     canonical: `/${category.slug}`,
     body: render('Results', {
       category, suburb: null, businesses: inCategory, suburbs,
       heading: `${category.label} in Cape Town`,
       intro: inCategory.length
-        ? `Every ${category.one} here has had their ID and address checked, and the trade registration where the work calls for one. Reviews come only from customers who recorded a hire.`
+        ? `Each listing says whether we have checked it. A verified ${category.one} has had their ID, address and trade registration seen by a person; the rest are listed from public details and marked as not yet verified.`
         : `We vet before we publish, so this page fills up slower than a directory that lists whoever asks.`,
       nearby: [...index.values()]
         .filter((e) => e.category === category.slug)
@@ -129,14 +129,14 @@ for (const category of CATEGORIES) {
   for (const entry of [...index.values()].filter((e) => e.category === category.slug)) {
     const n = entry.businesses.length;
     await emit(`${category.slug}/${entry.slug}`, shell({
-      title: `${category.label} in ${entry.suburb}, Cape Town — ${n} verified | HireInCapeTown`,
-      description: `${n} verified ${n === 1 ? category.one : category.label.toLowerCase()} serving ${entry.suburb}. Checked ID and trade registration, WhatsApp or call direct.`,
+      title: `${category.label} in ${entry.suburb}, Cape Town — ${n} listed | HireInCapeTown`,
+      description: `${n} ${n === 1 ? category.one : category.label.toLowerCase()} serving ${entry.suburb}, each marked verified or not yet verified. WhatsApp or call direct.`,
       canonical: `/${category.slug}/${entry.slug}`,
       body: render('Results', {
         category, suburb: { name: entry.suburb, slug: entry.slug },
         businesses: entry.businesses, suburbs,
         heading: `${category.label} in ${entry.suburb}`,
-        intro: `${n} verified ${n === 1 ? category.one : category.label.toLowerCase()} covering ${entry.suburb} and the surrounding area. We check ID, business address and trade registration before a listing goes live.`,
+        intro: `${n} ${n === 1 ? category.one : category.label.toLowerCase()} covering ${entry.suburb} and the surrounding area. Every listing says plainly whether a person has checked it.`,
         nearby: [...index.values()]
           .filter((e) => e.category === category.slug && e.slug !== entry.slug)
           .slice(0, 10)
@@ -151,14 +151,19 @@ for (const b of businesses) {
   const category = byCategorySlug(b.category);
   await emit(`business/${b.slug}`, shell({
     title: `${b.name} — ${category?.one ?? b.category} in ${b.suburbs_served[0]} | HireInCapeTown`,
-    description: `${b.name}, verified ${category?.one ?? ''} in ${b.suburbs_served[0]}. ${b.services.slice(0, 3).join(', ')}. ${b.rating_count} reviews from recorded hires.`,
+    description: b.status === 'verified'
+      ? `${b.name}, verified ${category?.one ?? ''} in ${b.suburbs_served[0]}. ${b.services.slice(0, 3).join(', ')}. ${b.rating_count} reviews from recorded hires.`
+      : `${b.name}, ${category?.one ?? ''} in ${b.suburbs_served[0]}. ${b.services.slice(0, 3).join(', ')}. Listed from public details and not yet verified by HireInCapeTown.`,
     canonical: `/business/${b.slug}`,
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'LocalBusiness',
       name: b.name,
       description: b.description,
-      telephone: b.phone,
+      ...(b.phone && { telephone: b.phone }),
+      // sameAs, not url: `url` below is this listing's canonical page. A second
+      // `url` key would silently overwrite it.
+      ...(b.website && { sameAs: [b.website] }),
       areaServed: b.suburbs_served.map((s) => ({ '@type': 'Place', name: `${s}, Cape Town` })),
       address: { '@type': 'PostalAddress', addressLocality: b.suburbs_served[0], addressRegion: 'Western Cape', addressCountry: 'ZA' },
       ...(b.rating_count > 0 && {

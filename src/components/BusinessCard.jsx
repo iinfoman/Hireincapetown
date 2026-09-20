@@ -1,4 +1,4 @@
-import { VerifiedBadge, Rating, OpenNow, ContactRow, Initials } from './bits.jsx';
+import { VerifiedBadge, UnverifiedBadge, Rating, OpenNow, ContactRow, Initials } from './bits.jsx';
 import { rands } from '../lib/slug.js';
 
 export const BusinessCard = ({ business: b, index = 0, context }) => {
@@ -16,7 +16,7 @@ export const BusinessCard = ({ business: b, index = 0, context }) => {
             <a href={`/business/${b.slug}`} className="hover:text-protea focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-protea">
               {b.name}
             </a>
-            {verified && <VerifiedBadge />}
+            {verified ? <VerifiedBadge /> : <UnverifiedBadge />}
           </h3>
           <div className="mt-1"><Rating avg={b.rating_avg} count={b.rating_count} /></div>
           {b.suburbs_served?.[0] && <p className="mt-1 text-[13px] text-ink-2">{b.suburbs_served[0]}</p>}

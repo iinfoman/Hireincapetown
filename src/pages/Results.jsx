@@ -19,7 +19,9 @@ const Empty = ({ category, suburb }) => (
 );
 
 /** Serves both /:category and the money pages, /:category/:suburb. */
-export const Results = ({ category, suburb, businesses, suburbs, nearby, heading, intro }) => (
+export const Results = ({ category, suburb, businesses, suburbs, nearby, heading, intro }) => {
+  const verifiedCount = businesses.filter((b) => b.status === 'verified').length;
+  return (
   <Layout>
     <div className="bg-ink px-4 pb-16 pt-7 md:px-10 md:pb-20 md:pt-12">
       <div className="mx-auto max-w-[1180px]">
@@ -39,11 +41,19 @@ export const Results = ({ category, suburb, businesses, suburbs, nearby, heading
 
     <section className="mx-auto max-w-[1180px] px-4 pt-10 md:px-10">
       {businesses.length > 0 && (
-        <div className="mb-3.5 flex items-baseline justify-between">
+        <div className="mb-3.5">
           <h2 className="font-dsp text-[17px] font-bold md:text-[20px]">
-            {businesses.length} verified {businesses.length === 1 ? category.one : category.label.toLowerCase()}
+            {businesses.length} {businesses.length === 1 ? category.one : category.label.toLowerCase()}
             {suburb ? ` serving ${suburb.name}` : ' in Cape Town'}
           </h2>
+          {/* Never let a mixed list imply everything on it was checked. */}
+          <p className="mt-1 text-[13px] text-ink-2">
+            {verifiedCount === 0
+              ? 'None of these have been verified yet — details come from the businesses\u2019 own websites.'
+              : verifiedCount === businesses.length
+                ? 'Every one checked before it went up.'
+                : `${verifiedCount} checked before going up; the rest are listed from public details and not yet verified.`}
+          </p>
         </div>
       )}
 
@@ -60,7 +70,7 @@ export const Results = ({ category, suburb, businesses, suburbs, nearby, heading
           <aside className="mt-4 flex items-start gap-3 rounded-[14px] bg-protea-tint p-3.5 md:max-w-[640px]">
             <p className="text-[13px] leading-relaxed">
               Only people who recorded a hire here can leave a review. That's why some listings show eleven
-              reviews and not four hundred.
+              reviews and not four hundred, and why a new listing shows none at all.
             </p>
           </aside>
         </>
@@ -82,4 +92,5 @@ export const Results = ({ category, suburb, businesses, suburbs, nearby, heading
       )}
     </section>
   </Layout>
-);
+  );
+};
