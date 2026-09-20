@@ -1,4 +1,4 @@
-import { VerifiedBadge, UnverifiedBadge, Rating, OpenNow, ContactRow, Initials } from './bits.jsx';
+import { VerifiedBadge, UnverifiedBadge, PromotedBadge, Rating, OpenNow, ContactRow, Initials } from './bits.jsx';
 import { rands } from '../lib/slug.js';
 
 export const BusinessCard = ({ business: b, index = 0, context }) => {
@@ -17,6 +17,7 @@ export const BusinessCard = ({ business: b, index = 0, context }) => {
               {b.name}
             </a>
             {verified ? <VerifiedBadge /> : <UnverifiedBadge />}
+            {b.promoted && <PromotedBadge />}
           </h3>
           <div className="mt-1"><Rating avg={b.rating_avg} count={b.rating_count} /></div>
           {b.suburbs_served?.[0] && <p className="mt-1 text-[13px] text-ink-2">{b.suburbs_served[0]}</p>}

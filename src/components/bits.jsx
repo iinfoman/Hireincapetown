@@ -27,6 +27,18 @@ export const UnverifiedBadge = ({ full = false }) =>
     </span>
   );
 
+/**
+ * Paid placement must be labelled. A reader who cannot tell the difference
+ * between "first because they are good" and "first because they paid" stops
+ * trusting either, which costs more than the advert earns.
+ */
+export const PromotedBadge = () => (
+  <span className="rounded-full bg-star/15 px-1.5 py-0.5 text-[10.5px] font-bold uppercase tracking-wide text-[#8A6200]"
+        title="This business pays for placement. It is not ranked by merit.">
+    Promoted
+  </span>
+);
+
 export const Rating = ({ avg, count }) => {
   const value = fmtRating(avg);
   // A newly verified business has no rating. Showing "0,0" would read as a

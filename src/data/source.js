@@ -8,10 +8,11 @@
 // builds before the database exists, and how a contributor gets a working site
 // with no credentials at all.
 import { readFile } from 'node:fs/promises';
+import { ratingFrom } from '../lib/reviews.js';
 
 const SELECT = `
   select b.slug, b.name, b.category, b.suburbs_served, b.services, b.description,
-         b.phone, b.whatsapp, b.website, b.status, b.rating_avg, b.rating_count,
+         b.phone, b.whatsapp, b.website, b.status, b.promoted, b.rating_avg, b.rating_count,
          b.callout_from, b.hours,
          coalesce(
            (select json_agg(json_build_object('type', v.doc_type, 'checked_on', v.checked_at, 'label', v.label))
@@ -22,7 +23,8 @@ const SELECT = `
    -- Both public states. 'verified' has had documents checked; 'listed' has
    -- not, and says so on the page. 'pending' and 'rejected' never ship.
    where b.status in ('verified', 'listed')
-   order by (b.status = 'verified') desc, b.rating_avg desc nulls last, b.rating_count desc`;
+   order by b.promoted desc nulls last, (b.status = 'verified') desc,
+            b.rating_avg desc nulls last, b.rating_count desc`;
 
 let cache;
 
@@ -70,14 +72,22 @@ export async function loadBusinesses() {
     // Mirror the query exactly, so the fallback can't be more permissive.
     // Verified first, then listed: a checked business outranks an unchecked
     // one whatever its rating, because that is what the site is for.
-    const rank = (b) => (b.status === 'verified' ? 0 : 1);
+    // Promoted first, then verified, then rating. Paying for placement moves a
+    // listing up the page; it never changes whether it says "verified", which
+    // is the line that must not move for money.
+    const rank = (b) => (b.promoted ? 0 : 1) * 2 + (b.status === 'verified' ? 0 : 1);
     cache = raw.filter((b) => b.status === 'verified' || b.status === 'listed')
+               // The rating shown is always the one its published reviews add
+               // up to, so the two can never drift apart.
+               .map((b) => ({ ...b, ...ratingFrom(b.reviews) }))
                .sort((a, b) => rank(a) - rank(b)
                             || ((b.rating_avg ?? 0) - (a.rating_avg ?? 0))
                             || ((b.rating_count ?? 0) - (a.rating_count ?? 0)));
     const why = process.env.DATABASE_URL ? 'database unreachable — see the warning above' : 'no DATABASE_URL';
     const v = cache.filter((b) => b.status === 'verified').length;
-    console.log(`  data: ${cache.length} businesses from db/seed.json — ${v} verified, ${cache.length - v} listed (${why})`);
+    const promo = cache.filter((b) => b.promoted).length;
+    const revs = cache.reduce((n, b) => n + b.rating_count, 0);
+    console.log(`  data: ${cache.length} businesses from db/seed.json — ${v} verified, ${cache.length - v} listed, ${promo} promoted, ${revs} reviews (${why})`);
   }
   return cache;
 }

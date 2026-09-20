@@ -1,6 +1,52 @@
 import { Layout } from '../components/Layout.jsx';
 import { Shield } from '../components/Icons.jsx';
 import { CONTACT_EMAIL, RESPONSIBLE_PARTY, mailto } from '../lib/site.js';
+import { CATEGORIES } from '../lib/categories.js';
+
+
+// --- Netlify form plumbing ---------------------------------------------
+//
+// Netlify finds forms by scanning the deployed HTML at build time, so these
+// attributes have to be in the prerendered output — which they are, because
+// nothing here hydrates. No database, no serverless function, no key.
+//
+// netlify-honeypot names a field a human never sees and a bot fills in.
+// Submissions land in Netlify -> Forms, and you publish them from the
+// dashboard. That step is the moderation: nothing a stranger types reaches
+// the site on its own.
+const FORM_PROPS = (name) => ({
+  name,
+  method: 'POST',
+  action: '/thank-you',
+  'data-netlify': 'true',
+  'netlify-honeypot': 'bot-field',
+});
+
+const Hidden = ({ name }) => (
+  <>
+    <input type="hidden" name="form-name" value={name} />
+    <p className="hidden">
+      <label>Leave this empty<input name="bot-field" tabIndex={-1} autoComplete="off" /></label>
+    </p>
+  </>
+);
+
+const Field = ({ label, hint, children }) => (
+  <label className="mt-4 block first:mt-0">
+    <span className="text-[14px] font-bold">{label}</span>
+    {hint && <span className="mt-0.5 block text-[12.5px] text-ink-2">{hint}</span>}
+    {children}
+  </label>
+);
+
+const input = 'mt-1.5 w-full rounded-ctl border border-line-strong bg-white px-3 py-2.5 text-[15px] min-h-tap focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-protea';
+
+const Submit = ({ children }) => (
+  <button type="submit"
+          className="mt-6 min-h-[52px] w-full rounded-ctl bg-protea px-6 text-[15.5px] font-bold text-white hover:bg-protea-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-protea md:w-auto">
+    {children}
+  </button>
+);
 
 /** Dark band, then prose. Same shape as Results so the site reads as one thing. */
 const InfoPage = ({ title, intro, children }) => (
@@ -89,12 +135,67 @@ export const ListYourBusiness = () => (
     </P>
 
     <H2>How to start</H2>
-    <P>
-      {CONTACT_EMAIL
-        ? 'Email us with your business name, what you do, and which suburbs you cover. We will reply with what we need from you.'
-        : 'Get in touch with your business name, what you do, and which suburbs you cover, and we will reply with what we need from you. Our contact address is being set up and will appear here shortly.'}
-    </P>
-    <EmailButton subject="List my business on HireInCapeTown" label="Email us to get listed" />
+    <P>Fill this in and we will come back to you about the documents.</P>
+
+    <form {...FORM_PROPS('business-listing')} className="mt-5 rounded-[18px] border border-line bg-white p-4 md:p-6">
+      <Hidden name="business-listing" />
+
+      <Field label="Business name"><input className={input} name="business" required /></Field>
+      <Field label="Your name" hint="Who we should ask for when we call.">
+        <input className={input} name="contact" required />
+      </Field>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field label="Phone"><input className={input} name="phone" type="tel" required /></Field>
+        <Field label="WhatsApp" hint="If different from the number above.">
+          <input className={input} name="whatsapp" type="tel" />
+        </Field>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field label="Email"><input className={input} name="email" type="email" required /></Field>
+        <Field label="Website" hint="Optional."><input className={input} name="website" type="url" placeholder="https://" /></Field>
+      </div>
+
+      <Field label="What do you do?">
+        <select className={input} name="trade" required defaultValue="">
+          <option value="" disabled>Choose a trade</option>
+          {CATEGORIES.map((c) => <option key={c.slug} value={c.label}>{c.label}</option>)}
+        </select>
+      </Field>
+
+      <Field label="Suburbs you actually get to" hint="The ones you really cover, not the whole peninsula.">
+        <input className={input} name="suburbs" placeholder="Diep River, Plumstead, Wynberg" required />
+      </Field>
+
+      <Field label="Services" hint="Separate them with commas.">
+        <input className={input} name="services" placeholder="Burst pipes, blocked drains, geysers" required />
+      </Field>
+
+      <Field label="Trade registration number" hint="PIRB for plumbers, Department of Employment and Labour for electricians. Leave blank if your trade has no register.">
+        <input className={input} name="registration" />
+      </Field>
+
+      <Field label="Anything else we should know">
+        <textarea className={input} name="notes" rows={3} />
+      </Field>
+
+      <label className="mt-5 flex items-start gap-2.5 text-[13.5px] leading-relaxed">
+        <input type="checkbox" name="consent" required className="mt-0.5" />
+        <span>
+          I am authorised to list this business, and I understand HireInCapeTown will check my ID,
+          trading address and registration before the listing shows as verified.
+        </span>
+      </label>
+
+      <Submit>Send my details</Submit>
+      <p className="mt-3 text-[12.5px] text-ink-2">
+        We reply to everyone, including the ones we cannot list.
+      </p>
+    </form>
+
+    <P>Would rather just email? {CONTACT_EMAIL ? 'Write to us at' : 'An address is coming shortly.'}{' '}
+      {CONTACT_EMAIL && <EmailLink />}.</P>
   </InfoPage>
 );
 
@@ -264,5 +365,95 @@ export const Privacy = () => (
       {RESPONSIBLE_PARTY} is the responsible party for the personal information on this site
       {CONTACT_EMAIL ? <>, and the address above reaches us</> : null}.
     </P>
+  </InfoPage>
+);
+
+// ---------------------------------------------------------------- review
+
+export const Review = ({ businesses }) => (
+  <InfoPage
+    title="Leave a review"
+    intro="Only if you actually used them. We read every one before it goes up, and we publish the bad ones too."
+  >
+    <form {...FORM_PROPS('review')} className="rounded-[18px] border border-line bg-white p-4 md:p-6">
+      <Hidden name="review" />
+
+      <Field label="Which business?">
+        <select className={input} name="business" id="reviewBusiness" required defaultValue="">
+          <option value="" disabled>Choose a business</option>
+          {businesses.map((b) => (
+            <option key={b.slug} value={b.slug}>{b.name}</option>
+          ))}
+        </select>
+      </Field>
+
+      {/* Radios, not stars: they work with no JavaScript, they are reachable
+          by keyboard, and a screen reader announces them properly. */}
+      <fieldset className="mt-5 border-0 p-0">
+        <legend className="text-[14px] font-bold">How did it go?</legend>
+        <div className="mt-2 flex flex-wrap gap-2">
+          {[5, 4, 3, 2, 1].map((n) => (
+            <label key={n} className="flex min-h-tap cursor-pointer items-center gap-2 rounded-full border border-line-strong px-3.5 text-[14px] font-semibold">
+              <input type="radio" name="rating" value={n} required />
+              {n} {n === 1 ? 'star' : 'stars'}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+
+      <Field label="What happened?" hint="What you needed, what they did, whether you would call them again.">
+        <textarea className={input} name="body" rows={5} required minLength={20} />
+      </Field>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Field label="Your name" hint="Shown as you type it. A first name and initial is fine.">
+          <input className={input} name="author" required />
+        </Field>
+        <Field label="When was the job?">
+          <input className={input} name="job_date" type="date" />
+        </Field>
+      </div>
+
+      <Field label="Your phone or email" hint="Never published. We use it once, to check you are a real customer.">
+        <input className={input} name="contact" required />
+      </Field>
+
+      <label className="mt-5 flex items-start gap-2.5 text-[13.5px] leading-relaxed">
+        <input type="checkbox" name="consent" required className="mt-0.5" />
+        <span>This is my own experience of hiring this business, and it is true.</span>
+      </label>
+
+      <Submit>Send review</Submit>
+      <p className="mt-3 text-[12.5px] leading-relaxed text-ink-2">
+        Reviews are not published automatically. We check that a real job happened before
+        yours appears, which is why there are not thousands of them.
+      </p>
+    </form>
+
+    {/* Deep links from a business page arrive as /review?business=slug. Two
+        lines of script beat a build-time page per business. */}
+    <script dangerouslySetInnerHTML={{ __html:
+      "(function(){var s=new URLSearchParams(location.search).get('business');" +
+      "if(!s)return;var el=document.getElementById('reviewBusiness');" +
+      "if(el&&[].some.call(el.options,function(o){return o.value===s;}))el.value=s;})();" }} />
+  </InfoPage>
+);
+
+// ---------------------------------------------------------------- thanks
+
+export const ThankYou = () => (
+  <InfoPage title="Thank you" intro="That came through.">
+    <P>
+      A person reads everything sent here, usually within a day or two. If we need anything
+      else from you, we will be in touch on the number or address you gave.
+    </P>
+    <P>
+      If you were listing a business: the next step is the documents — your ID, something with
+      your trading address on it, and your registration number if your trade has one.{' '}
+      <a href="/how-vetting-works" className="font-semibold text-protea hover:underline">What we check and why</a>.
+    </P>
+    <a href="/" className="mt-5 inline-flex min-h-tap items-center rounded-ctl bg-protea px-5 text-[14.5px] font-bold text-white hover:bg-protea-deep">
+      Back to HireInCapeTown
+    </a>
   </InfoPage>
 );

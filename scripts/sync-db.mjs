@@ -89,6 +89,7 @@ try {
     const values = [
       b.name, b.slug, b.category, b.suburbs_served ?? [], b.services ?? [],
       b.description ?? null, b.phone ?? null, b.whatsapp ?? null, b.website ?? null, b.status,
+      b.promoted ?? false,
       b.rating_avg ?? null, b.rating_count ?? 0, b.callout_from ?? null,
       b.hours ? JSON.stringify(b.hours) : null,
     ];
@@ -96,8 +97,8 @@ try {
     const { rows: [row] } = await client.query(
       `insert into hireincapetown.businesses
          (name, slug, category, suburbs_served, services, description, phone,
-          whatsapp, website, status, rating_avg, rating_count, callout_from, hours)
-       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+          whatsapp, website, status, promoted, rating_avg, rating_count, callout_from, hours)
+       values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
        on conflict (slug) do update set
          name           = excluded.name,
          category       = excluded.category,
@@ -108,8 +109,9 @@ try {
          whatsapp       = excluded.whatsapp,
          website        = excluded.website,
          status         = excluded.status,
-         rating_avg     = case when $15 then hireincapetown.businesses.rating_avg   else excluded.rating_avg   end,
-         rating_count   = case when $15 then hireincapetown.businesses.rating_count else excluded.rating_count end,
+         promoted       = excluded.promoted,
+         rating_avg     = case when $16 then hireincapetown.businesses.rating_avg   else excluded.rating_avg   end,
+         rating_count   = case when $16 then hireincapetown.businesses.rating_count else excluded.rating_count end,
          callout_from   = excluded.callout_from,
          hours          = excluded.hours,
          updated_at     = now()
@@ -117,6 +119,11 @@ try {
       [...values, keepRating]);
 
     existing ? updated++ : created++;
+
+    // b.reviews is deliberately not synced. The database's reviews table hangs
+    // off a recorded hire with a real auth user behind it, which a review
+    // typed in from a form has no way to supply. The file's reviews are the
+    // operator's moderated copy; the table stays for the signed-in flow.
 
     // Verification records are added and refreshed, never deleted. A row here
     // may point at a document that was actually uploaded; the file is not

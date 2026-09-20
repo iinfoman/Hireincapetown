@@ -196,6 +196,22 @@ for (const [route, page, title, description] of INFO) {
   await emit(route, shell({ title, description, canonical: `/${route}`, body: render(page, {}) }));
 }
 
+// The review form needs the list of businesses to choose from, so it cannot
+// sit in the table above with the pages that take no data.
+await emit('review', shell({
+  title: 'Leave a review | HireInCapeTown',
+  description: 'Used one of these businesses? Tell other people in Cape Town how it went. Every review is read by a person before it appears.',
+  canonical: '/review',
+  body: render('Review', { businesses }),
+}));
+
+await emit('thank-you', shell({
+  title: 'Thank you | HireInCapeTown',
+  description: 'We have your message.',
+  canonical: '/thank-you',
+  body: render('ThankYou', {}),
+}));
+
 if (!CONTACT_EMAIL) {
   // These pages exist to be acted on. Shipping them with no way to reply is a
   // worse failure than a 404, because it looks like it works.
@@ -239,11 +255,13 @@ await emit('find', `<!doctype html>
 // --- sitemap + robots -------------------------------------------------------
 await writeFile(`${OUT}/sitemap.xml`,
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-  pages.filter((p) => p.route !== 'find')
+  // /find bounces and /thank-you is a dead end after a form post. Neither is
+  // a page anyone should arrive at from a search result.
+  pages.filter((p) => p.route !== 'find' && p.route !== 'thank-you')
        .map((p) => `  <url><loc>${SITE}${p.route === '/' ? '/' : '/' + p.route}</loc></url>`).join('\n') +
   `\n</urlset>\n`);
 
-await writeFile(`${OUT}/robots.txt`, `User-agent: *\nAllow: /\nDisallow: /find\n\nSitemap: ${SITE}/sitemap.xml\n`);
+await writeFile(`${OUT}/robots.txt`, `User-agent: *\nAllow: /\nDisallow: /find\nDisallow: /thank-you\nDisallow: /tools/\n\nSitemap: ${SITE}/sitemap.xml\n`);
 
 // --- budget -----------------------------------------------------------------
 const { readFileSync, existsSync } = await import('node:fs');

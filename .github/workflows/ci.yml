@@ -51,7 +51,7 @@ jobs:
           done
           # Linked from the header and footer of every page, so any one missing
           # is a 404 on the whole site.
-          for i in list-your-business how-vetting-works report privacy; do
+          for i in list-your-business how-vetting-works report privacy review thank-you; do
             test -f "dist/client/$i/index.html" || { echo "missing $i"; exit 1; }
           done
           echo "emitted $(find dist/client -name index.html | wc -l) pages"

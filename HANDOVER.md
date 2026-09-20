@@ -134,6 +134,31 @@ It is a static page with no server and no credentials of its own, so there is
 nothing to pay for and nothing to keep running. If the token is ever lost or
 revoked, the same page still takes pasted JSON and gives a file back.
 
+## Submissions, reviews and promoted listings
+
+**Two public forms** post to Netlify Forms: `/list-your-business` and
+`/review`. No database, no function, no key — Netlify finds them by scanning
+the deployed HTML. Free tier is 100 submissions a month across both. They
+appear under **Forms** in the Netlify dashboard and Netlify emails you.
+
+Nothing submitted appears on the site until you paste it into the dashboard
+and save. That is deliberate: it is the moderation, and it needs no spam
+filter and no approval queue.
+
+**Reviews live in `db/seed.json`** next to the business. The star rating is
+derived from the published ones at build time (`src/lib/reviews.js`), never
+stored, so the number and the comments under it cannot drift apart. A review
+set to `removed` keeps its record but counts for nothing and renders nowhere.
+
+The database's own `reviews` table is untouched by this and stays for the
+future signed-in flow, where a review hangs off a recorded hire. `sync-db.mjs`
+deliberately does not write file reviews into it — it could not, since there
+is no `hire_id` or auth user behind a form submission.
+
+**`promoted`** sorts a listing to the top of its category and suburb pages and
+labels the card. It never affects `status`: a promoted listing that has not
+been checked still shows "Not verified yet".
+
 ## The sleeping database
 
 The free Supabase tier pauses a project after about a week with no queries. That
