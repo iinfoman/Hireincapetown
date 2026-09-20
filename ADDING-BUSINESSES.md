@@ -27,7 +27,51 @@ gets typed up.
 
 ---
 
-## The easy way: use the form
+## The dashboard
+
+**[hireincapetown.co.za/tools/dashboard/](https://hireincapetown.co.za/tools/dashboard/)**
+
+Everything in one screen: every listing, searchable, with an editor for every
+field and a save that commits straight to GitHub. This is the tool to use.
+
+- **Search** matches name, slug, suburb, service, phone, website, description
+  and status at once, and every word you add narrows it further. Press `/`
+  anywhere to jump to the box.
+- **The counters across the top are filters.** "Need attention" is the useful
+  one - it collects anything broken or half-finished, including the one thing
+  that must never ship: a listing marked verified with no checks recorded.
+- **The editor** covers name, slug, trade, status, description, phone,
+  WhatsApp (typed normally, saved as `27...`), website, call-out fee, suburbs
+  and services as add/remove chips, the four verification checks with dates,
+  and a seven-day hours grid.
+- **Save** validates everything first, shows what will be live, and commits to
+  `db/seed.json`. Netlify rebuilds in about a minute.
+
+### It is password-protected
+
+The browser asks for a password before the page loads at all. Type anything as
+the username; only the password matters.
+
+Set it once: Netlify -> **Site configuration** -> **Environment variables** ->
+add `TOOLS_PASSWORD` -> redeploy. Until you do, the tools are closed to
+everyone including you, and the page says so.
+
+To change it later, edit that variable and redeploy. To lock yourself out of a
+shared device, close the browser.
+
+Connect it once: press **Data**, paste a GitHub fine-grained token with
+**Contents: Read and write** on this repository. The token is stored only in
+your own browser and is sent only to github.com - the page itself holds no
+secrets, which is why it can sit at a public address. Revoke it any time in
+GitHub settings.
+
+No token? The same dialog takes pasted JSON, and Save gives you a file to
+commit on github.com yourself.
+
+Ratings are deliberately not editable. They come from recorded hires, which is
+what makes a rating here mean anything.
+
+## The older way: the single-listing form
 
 **[hireincapetown.co.za/tools/new-listing/](https://hireincapetown.co.za/tools/new-listing/)**
 
