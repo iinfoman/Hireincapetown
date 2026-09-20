@@ -11,6 +11,10 @@ Nothing here needs a subscription, a login, or a tool you do not already have.
 
 In rough order of how well it works:
 
+**A starting call list** is in [CANDIDATES.md](CANDIDATES.md) — real businesses
+found by web search, none of them checked, with the lead-generation companies
+flagged so you do not waste calls on them.
+
 **Suburb Facebook groups.** Search "plumber" inside the group — Plumstead,
 Meadowridge, Southern Suburbs Recommendations, and the equivalent for whatever
 area you are filling. The same three or four names come back repeatedly with
