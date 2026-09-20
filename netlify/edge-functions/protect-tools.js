@@ -44,11 +44,22 @@ export default async (request, context) => {
 
   // Fail closed. An unset password must never mean "let everyone in" — that
   // is exactly the accident this function exists to prevent.
+  //
+  // Two different things land here and the page must name both. Saying only
+  // "no password has been set" sends someone who has just set one off to
+  // check the setting again, when what they actually need is a redeploy: a
+  // deploy built before the variable existed cannot see it.
   if (!expected) {
     return page('Admin tools are locked',
-      `<p>No password has been set yet, so these pages are closed to everyone.</p>
-       <p>In Netlify: <b>Site configuration</b> &rarr; <b>Environment variables</b> &rarr;
-       add <code>TOOLS_PASSWORD</code>, then redeploy.</p>`, 503);
+      `<p>This deploy cannot see a <code>TOOLS_PASSWORD</code> value, so these pages
+       are closed to everyone. One of two things:</p>
+       <p><b>You have already set it.</b> Then this deploy was built before you added
+       it, and only a new build picks it up. In Netlify: <b>Deploys</b> &rarr;
+       <b>Trigger deploy</b> &rarr; <b>Deploy site</b>, then reload this page.</p>
+       <p><b>You have not set it yet.</b> In Netlify: <b>Site configuration</b> &rarr;
+       <b>Environment variables</b> &rarr; add <code>TOOLS_PASSWORD</code> with
+       <b>All scopes</b> and all deploy contexts, then trigger a deploy as above.</p>`,
+      503);
   }
 
   const header = request.headers.get('authorization') || '';
