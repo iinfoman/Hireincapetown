@@ -1,5 +1,8 @@
 # Where this project stands
 
+> **Start with [BLUEPRINT.md](BLUEPRINT.md)** — the plan, the money model, and
+> every mistake already made. This file is the detailed reference.
+
 Written so the project can be picked up cold — by you in a month, by another
 developer, or with any tool. **Nothing below depends on a Claude subscription.**
 
