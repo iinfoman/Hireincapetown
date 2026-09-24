@@ -485,3 +485,18 @@ export const ThankYou = () => (
     </a>
   </InfoPage>
 );
+
+// ---------------------------------------------------------------- 404
+
+export const NotFound = () => (
+  <InfoPage title="That page is not here" intro="The link may be old, or the listing may have been taken down.">
+    <P>Try one of these instead:</P>
+    <Ul>
+      <Li><a href="/" className="font-semibold text-protea hover:underline">Search for a business</a></Li>
+      <Li><a href="/plumbers" className="font-semibold text-protea hover:underline">Plumbers</a>,{' '}
+        <a href="/electricians" className="font-semibold text-protea hover:underline">electricians</a>,{' '}
+        <a href="/cleaning" className="font-semibold text-protea hover:underline">cleaning</a></Li>
+      <Li><a href="/report" className="font-semibold text-protea hover:underline">Tell us about a broken link</a></Li>
+    </Ul>
+  </InfoPage>
+);

@@ -38,6 +38,12 @@ jobs:
       # a page count. A count tracks how many businesses happen to be verified,
       # so it goes red for a content decision and stays green for a real
       # regression that drops, say, every suburb page but leaves the profiles.
+      # Listing rules (verified needs checks, WhatsApp format, no silent
+      # skips), dead internal links, and Netlify forms present. Every rule
+      # is a mistake that already happened once. See BLUEPRINT.md.
+      - name: Guard rails
+        run: node scripts/check.mjs
+
       - name: Check the expected pages were emitted
         run: |
           test -f dist/client/index.html

@@ -37,6 +37,11 @@ function shell({ title, description, canonical, body, jsonLd }) {
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_ZA">
+<meta property="og:url" content="${SITE}${canonical}">
+<meta property="og:image" content="${SITE}/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Karla:wght@400;500;600;700&display=swap">
@@ -220,6 +225,19 @@ if (!CONTACT_EMAIL) {
   console.warn('  ! /list-your-business, /report and /privacy have shipped with no');
   console.warn('  ! way for anyone to get in touch. Set it and redeploy.');
   console.warn('  ' + '!'.repeat(64) + '\n');
+}
+
+// --- 404 ---------------------------------------------------------------------
+// Netlify serves /404.html for any path that does not exist. Without it a
+// mistyped link lands on Netlify's own generic page, off-brand and dead-ended.
+{
+  const html = shell({
+    title: 'Page not found | HireInCapeTown',
+    description: 'That page does not exist.',
+    canonical: '/404',
+    body: render('NotFound', {}),
+  });
+  await writeFile(`${OUT}/404.html`, html);
 }
 
 // --- /find: the need-bar's target ------------------------------------------
